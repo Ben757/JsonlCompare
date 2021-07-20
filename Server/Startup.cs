@@ -25,7 +25,6 @@ namespace JsonlCompare.Server
         {
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddMatBlazor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
