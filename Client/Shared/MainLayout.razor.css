@@ -1,0 +1,8 @@
+.drawer{
+    height: 95%;
+    border: thin solid gray;
+}
+
+.content{
+    margin: 8px;
+}
