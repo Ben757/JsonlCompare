@@ -2,6 +2,16 @@ body{
     margin: 0;
 }
 
+.vbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.nav-item-label {
+    margin-top: 1px;
+}
+
 
 #blazor-error-ui {
     background: lightyellow;

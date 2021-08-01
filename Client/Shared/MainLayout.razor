@@ -1,4 +1,10 @@
+@using JsonlCompare.Client.Components
+@using JsonlCompare.Client.Interfaces
 @inherits LayoutComponentBase
+
+
+@inject IPropertyInfoService propertyInfoService
+
 <MatAppBarContainer>
     <MatAppBar Fixed="true" Style="z-index: 100;">
         <MatAppBarRow>
@@ -13,10 +19,15 @@
     </MatAppBar>
     
     <MatAppBarContent>
-        <MatDrawerContainer Style="width: 100%; height: 100%;">
+        <MatDrawerContainer Style="width: 100%; height: 91vh;">
             <MatDrawer @bind-Opened="@Opened">
                 <div class="drawer">
-                    <p>Drawer Content</p>
+                    <MatNavMenu Multi="true">
+                        @foreach (var property in propertyInfoService.GetPropertyContainer())
+                        {
+                            <PropertySelectionComponent JsonProperty="@property"></PropertySelectionComponent>
+                        }
+                    </MatNavMenu>
                 </div>
             </MatDrawer>
             <MatDrawerContent>
@@ -30,11 +41,10 @@
 
 
 @code {
-    public bool Opened { get; set; }
+    private bool Opened { get; set; }
 
     private void ToggleDrawer()
     {
         Opened = !Opened;
     }
-
 }

@@ -1,0 +1,35 @@
+﻿@using JsonlCompare.Client.Models
+
+@if (!JsonProperty.HasChildren)
+{
+    <MatNavItem>
+        <div class="vbox">
+            <MatCheckbox @bind-Value="@JsonProperty.Show"></MatCheckbox>
+            <span class="nav-item-label">@JsonProperty.Name</span>
+        </div>
+    </MatNavItem>
+}
+else
+{
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="true">
+                <div class="vbox">
+                    <MatCheckbox @bind-Value="@JsonProperty.Show"></MatCheckbox>
+                    <span class="nav-item-label">@JsonProperty.Name</span>
+                </div>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            @foreach (var child in JsonProperty.Children)
+            {
+                <PropertySelectionComponent JsonProperty="@child"></PropertySelectionComponent>
+            }
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+}
+
+@code {
+    [Parameter]
+    public JsonPropertyInfo JsonProperty { get; set; }
+}

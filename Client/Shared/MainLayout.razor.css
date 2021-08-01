@@ -1,6 +1,6 @@
 .drawer{
-    height: 95%;
-    border: thin solid gray;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .content{
