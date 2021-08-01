@@ -16,7 +16,7 @@ namespace JsonlCompare.Client.Services
             this.jsonContainer = jsonContainer;
         }
 
-        public IEnumerable<JsonPropertyContainer> GetPropertyContainer()
+        public IEnumerable<JsonPropertyInfo> GetPropertyContainer()
         {
             var jsons = jsonContainer.Jsons;
 
@@ -40,16 +40,16 @@ namespace JsonlCompare.Client.Services
             return maxJson;
         }
 
-        private IReadOnlyList<JsonPropertyContainer> HandleJObject(JObject json)
+        private IReadOnlyList<JsonPropertyInfo> HandleJObject(JObject json)
         {
             return json.Children()
                 .Select(HandleJToken)
                 .ToList();
         }
 
-        private JsonPropertyContainer HandleJToken(JToken jToken)
+        private JsonPropertyInfo HandleJToken(JToken jToken)
         {
-            var jsonProperty = new JsonPropertyContainer();
+            var jsonProperty = new JsonPropertyInfo();
 
             var prop = jToken as JProperty;
 
@@ -71,20 +71,20 @@ namespace JsonlCompare.Client.Services
             return jsonProperty;
         }
 
-        private static void SetPropertyNameAndPath(JToken jToken, JsonPropertyContainer jsonProperty)
+        private static void SetPropertyNameAndPath(JToken jToken, JsonPropertyInfo jsonProperty)
         {
             jsonProperty.Name = jToken.Path.Split(".").Last();
             jsonProperty.Path = jToken.Path;
         }
 
-        private List<JsonPropertyContainer> HandleJArray(JArray jArray)
+        private List<JsonPropertyInfo> HandleJArray(JArray jArray)
         {
-            var childrenList = new List<JsonPropertyContainer>();
+            var childrenList = new List<JsonPropertyInfo>();
             var index = 0;
 
             foreach (var token in jArray)
             {
-                var childContainer = new JsonPropertyContainer
+                var childContainer = new JsonPropertyInfo
                 {
                     Name = index.ToString(),
                     Path = token.Path
