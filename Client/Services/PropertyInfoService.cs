@@ -30,28 +30,21 @@ namespace JsonlCompare.Client.Services
             var maxJson = jsons.First();
 
             foreach (var json in jsons.Skip(1))
-            {
-                maxJson.Merge(json, new JsonMergeSettings()
+                maxJson.Merge(json, new JsonMergeSettings
                 {
                     MergeArrayHandling = MergeArrayHandling.Merge,
                     PropertyNameComparison = StringComparison.InvariantCultureIgnoreCase,
                     MergeNullValueHandling = MergeNullValueHandling.Ignore
                 });
-            }
 
             return maxJson;
         }
 
         private IReadOnlyList<JsonPropertyContainer> HandleJObject(JObject json)
         {
-            var jsonProperties = new List<JsonPropertyContainer>();
-            
-            foreach (var property in json.Children())
-            {
-                jsonProperties.Add(HandleJToken(property));
-            }
-
-            return jsonProperties;
+            return json.Children()
+                .Select(HandleJToken)
+                .ToList();
         }
 
         private JsonPropertyContainer HandleJToken(JToken jToken)
@@ -60,31 +53,43 @@ namespace JsonlCompare.Client.Services
 
             var prop = jToken as JProperty;
 
-            switch (prop.Value)
+            switch (prop!.Value)
             {
                 case JObject jObject:
-                    jsonProperty.Name = jToken.Path.Split(".").Last();
+                    SetPropertyNameAndPath(jToken, jsonProperty);
                     jsonProperty.Children = HandleJObject(jObject);
                     break;
                 case JArray jArray:
-                    jsonProperty.Name = jToken.Path.Split(".").Last();
+                    SetPropertyNameAndPath(jToken, jsonProperty);
                     jsonProperty.Children = HandleJArray(jArray);
                     break;
                 default:
-                    jsonProperty.Name = jToken.Path.Split(".").Last();
+                    SetPropertyNameAndPath(jToken, jsonProperty);
                     break;
             }
 
             return jsonProperty;
         }
 
+        private static void SetPropertyNameAndPath(JToken jToken, JsonPropertyContainer jsonProperty)
+        {
+            jsonProperty.Name = jToken.Path.Split(".").Last();
+            jsonProperty.Path = jToken.Path;
+        }
+
         private List<JsonPropertyContainer> HandleJArray(JArray jArray)
         {
             var childrenList = new List<JsonPropertyContainer>();
             var index = 0;
+
             foreach (var token in jArray)
             {
-                var childContainer = new JsonPropertyContainer() {Name = index.ToString()};
+                var childContainer = new JsonPropertyContainer
+                {
+                    Name = index.ToString(),
+                    Path = token.Path
+                };
+
                 switch (token)
                 {
                     case JObject objectToken:

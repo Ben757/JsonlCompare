@@ -40,72 +40,88 @@ namespace JsonlCompare.Client.Tests
             {
                 new JsonPropertyContainer
                 {
-                    Name = "PseudoOrderNumber"
+                    Name = "PseudoOrderNumber",
+                    Path = "PseudoOrderNumber"
                 },
                 new JsonPropertyContainer
                 {
-                    Name = "DateOfOrder"
+                    Name = "DateOfOrder",
+                    Path = "DateOfOrder"
                 },
                 new JsonPropertyContainer
                 {
-                    Name = "IsInternal"
+                    Name = "IsInternal",
+                    Path = "IsInternal"
                 },
                 new JsonPropertyContainer
                 {
-                    Name = "ToDo"
+                    Name = "ToDo",
+                    Path = "ToDo"
                 },
                 new JsonPropertyContainer
                 {
-                    Name = "MailAddress"
+                    Name = "MailAddress",
+                    Path = "MailAddress"
                 },
                 new JsonPropertyContainer
                 {
-                    Name = "Operator"
+                    Name = "Operator",
+                    Path = "Operator"
                 },
                 new JsonPropertyContainer
                 {
                     Name = "Customer",
+                    Path = "Customer",
                     Children = new[]
                     {
                         new JsonPropertyContainer
                         {
-                            Name = "Name"
+                            Name = "Name",
+                            Path = "Customer.Name"
                         },
                         new JsonPropertyContainer
                         {
-                            Name = "CustomerId"
+                            Name = "CustomerId",
+                            Path = "Customer.CustomerId"
                         }
                     }
                 },
                 new JsonPropertyContainer
                 {
                     Name = "Machine",
+                    Path = "Machine",
                     Children = new[]
                     {
                         new JsonPropertyContainer
                         {
-                            Name = "SerialNumber"
+                            Name = "SerialNumber",
+                            Path = "Machine.SerialNumber"
                         },
                         new JsonPropertyContainer
                         {
-                            Name = "OperatingHours"
+                            Name = "OperatingHours",
+                            Path = "Machine.OperatingHours"
                         },
                         new JsonPropertyContainer
                         {
-                            Name = "Location"
+                            Name = "Location",
+                            Path = "Machine.Location"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "Customer",
+                            Path = "Machine.Customer",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
-                                    Name = "Name"
+                                    Name = "Name",
+                                    Path = "Machine.Customer.Name"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "CustomerId"
+                                    Name = "CustomerId",
+                                    Path = "Machine.Customer.CustomerId"
                                 }
                             }
                         }
@@ -144,82 +160,99 @@ namespace JsonlCompare.Client.Tests
             {
                 new JsonPropertyContainer
                 {
-                    Name = "PseudoOrderNumber"
+                    Name = "PseudoOrderNumber",
+                    Path = "PseudoOrderNumber"
                 },
                 new JsonPropertyContainer
                 {
                     Name = "Customers",
+                    Path = "Customers",
                     Children = new[]
                     {
                         new JsonPropertyContainer
                         {
                             Name = "0",
+                            Path = "Customers[0]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
-                                    Name = "Name"
+                                    Name = "Name",
+                                    Path = "Customers[0].Name"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "CustomerId"
+                                    Name = "CustomerId",
+                                    Path = "Customers[0].CustomerId"
                                 }
                             }
                         },
                         new JsonPropertyContainer
                         {
                             Name = "1",
+                            Path = "Customers[1]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
-                                    Name = "Name"
+                                    Name = "Name",
+                                    Path = "Customers[1].Name"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "CustomerId"
+                                    Name = "CustomerId",
+                                    Path = "Customers[1].CustomerId"
                                 }
                             }
                         },
                         new JsonPropertyContainer
                         {
                             Name = "2",
+                            Path = "Customers[2]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
-                                    Name = "Name"
+                                    Name = "Name",
+                                    Path = "Customers[2].Name"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "CustomerId"
+                                    Name = "CustomerId",
+                                    Path = "Customers[2].CustomerId"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "MoreProperties"
+                                    Name = "MoreProperties",
+                                    Path = "Customers[2].MoreProperties"
                                 }
                             }
                         },
                         new JsonPropertyContainer
                         {
                             Name = "3",
+                            Path = "Customers[3]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
-                                    Name = "Name"
+                                    Name = "Name",
+                                    Path = "Customers[3].Name"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "CustomerId"
+                                    Name = "CustomerId",
+                                    Path = "Customers[3].CustomerId"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "MoreProperties"
+                                    Name = "MoreProperties",
+                                    Path = "Customers[3].MoreProperties"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "AnotherProperty"
+                                    Name = "AnotherProperty",
+                                    Path = "Customers[3].AnotherProperty"
                                 }
                             }
                         }
@@ -229,7 +262,7 @@ namespace JsonlCompare.Client.Tests
 
             result.ShouldDeepEqual(template);
         }
-        
+
         [Test]
         public void GetPropertyContainer_ArraysWithPrimitives_MergeAndReturnContainer()
         {
@@ -257,83 +290,100 @@ namespace JsonlCompare.Client.Tests
             {
                 new JsonPropertyContainer
                 {
-                    Name = "PseudoOrderNumber"
+                    Name = "PseudoOrderNumber",
+                    Path = "PseudoOrderNumber"
                 },
                 new JsonPropertyContainer
                 {
                     Name = "CustomerIds",
+                    Path = "CustomerIds",
                     Children = new[]
                     {
                         new JsonPropertyContainer
                         {
-                            Name = "0"
+                            Name = "0",
+                            Path = "CustomerIds[0]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "1",
+                            Path = "CustomerIds[1]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "2",
+                            Path = "CustomerIds[2]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "3",
+                            Path = "CustomerIds[3]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "4",
+                            Path = "CustomerIds[4]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "5",
+                            Path = "CustomerIds[5]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "6",
+                            Path = "CustomerIds[6]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "7",
+                            Path = "CustomerIds[7]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "8",
+                            Path = "CustomerIds[8]"
                         }
                     }
                 },
                 new JsonPropertyContainer
                 {
                     Name = "CustomerNames",
+                    Path = "CustomerNames",
                     Children = new[]
                     {
                         new JsonPropertyContainer
                         {
-                            Name = "0"
+                            Name = "0",
+                            Path = "CustomerNames[0]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "1",
+                            Path = "CustomerNames[1]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "2",
+                            Path = "CustomerNames[2]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "3",
+                            Path = "CustomerNames[3]"
                         },
                         new JsonPropertyContainer
                         {
                             Name = "4",
+                            Path = "CustomerNames[4]"
                         }
                     }
                 }
             };
-            
+
             result.ShouldDeepEqual(template);
         }
-        
+
         [Test]
         public void GetPropertyContainer_ArraysWithArraysOfPrimitives_MergeAndReturnContainer()
         {
@@ -361,75 +411,91 @@ namespace JsonlCompare.Client.Tests
             {
                 new JsonPropertyContainer
                 {
-                    Name = "PseudoOrderNumber"
+                    Name = "PseudoOrderNumber",
+                    Path = "PseudoOrderNumber"
                 },
                 new JsonPropertyContainer
                 {
                     Name = "CustomerArrays",
+                    Path = "CustomerArrays",
                     Children = new[]
                     {
                         new JsonPropertyContainer
                         {
                             Name = "0",
+                            Path = "CustomerArrays[0]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
-                                    Name = "0"
+                                    Name = "0",
+                                    Path = "CustomerArrays[0][0]"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "1"
+                                    Name = "1",
+                                    Path = "CustomerArrays[0][1]"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "2"
+                                    Name = "2",
+                                    Path = "CustomerArrays[0][2]"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "3"
+                                    Name = "3",
+                                    Path = "CustomerArrays[0][3]"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "4"
+                                    Name = "4",
+                                    Path = "CustomerArrays[0][4]"
                                 }
                             }
                         },
                         new JsonPropertyContainer
                         {
                             Name = "1",
+                            Path = "CustomerArrays[1]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
-                                    Name = "0"
+                                    Name = "0",
+                                    Path = "CustomerArrays[1][0]"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "1"
+                                    Name = "1",
+                                    Path = "CustomerArrays[1][1]"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "2"
+                                    Name = "2",
+                                    Path = "CustomerArrays[1][2]"
                                 }
                             }
                         },
                         new JsonPropertyContainer
                         {
                             Name = "2",
+                            Path = "CustomerArrays[2]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
-                                    Name = "0"
+                                    Name = "0",
+                                    Path = "CustomerArrays[2][0]"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "1"
+                                    Name = "1",
+                                    Path = "CustomerArrays[2][1]"
                                 },
                                 new JsonPropertyContainer
                                 {
-                                    Name = "2"
+                                    Name = "2",
+                                    Path = "CustomerArrays[2][2]"
                                 }
                             }
                         }
@@ -439,7 +505,7 @@ namespace JsonlCompare.Client.Tests
 
             result.ShouldDeepEqual(template);
         }
-        
+
         [Test]
         public void GetPropertyContainer_ArraysWithArraysOfObjects_MergeAndReturnContainer()
         {
@@ -467,137 +533,163 @@ namespace JsonlCompare.Client.Tests
             {
                 new JsonPropertyContainer
                 {
-                    Name = "PseudoOrderNumber"
+                    Name = "PseudoOrderNumber",
+                    Path = "PseudoOrderNumber"
                 },
                 new JsonPropertyContainer
                 {
                     Name = "CustomerArrays",
+                    Path = "CustomerArrays",
                     Children = new[]
                     {
                         new JsonPropertyContainer
                         {
                             Name = "0",
+                            Path = "CustomerArrays[0]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
                                     Name = "0",
-                                    Children = new []
+                                    Path = "CustomerArrays[0][0]",
+                                    Children = new[]
                                     {
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Name"
+                                            Name = "Name",
+                                            Path = "CustomerArrays[0][0].Name"
                                         },
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Id"
+                                            Name = "Id",
+                                            Path = "CustomerArrays[0][0].Id"
                                         }
                                     }
                                 },
                                 new JsonPropertyContainer
                                 {
                                     Name = "1",
-                                    Children = new []
+                                    Path = "CustomerArrays[0][1]",
+                                    Children = new[]
                                     {
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Name"
+                                            Name = "Name",
+                                            Path = "CustomerArrays[0][1].Name"
                                         },
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Id"
+                                            Name = "Id",
+                                            Path = "CustomerArrays[0][1].Id"
                                         }
                                     }
                                 },
                                 new JsonPropertyContainer
                                 {
                                     Name = "2",
-                                    Children = new []
+                                    Path = "CustomerArrays[0][2]",
+                                    Children = new[]
                                     {
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Name"
+                                            Name = "Name",
+                                            Path = "CustomerArrays[0][2].Name"
                                         },
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Id"
+                                            Name = "Id",
+                                            Path = "CustomerArrays[0][2].Id"
                                         }
                                     }
-                                },
+                                }
                             }
                         },
                         new JsonPropertyContainer
                         {
                             Name = "1",
+                            Path = "CustomerArrays[1]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
                                     Name = "0",
-                                    Children = new []
+                                    Path = "CustomerArrays[1][0]",
+                                    Children = new[]
                                     {
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Name"
+                                            Name = "Name",
+                                            Path = "CustomerArrays[1][0].Name"
                                         },
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Id"
+                                            Name = "Id",
+                                            Path = "CustomerArrays[1][0].Id"
                                         }
                                     }
                                 },
                                 new JsonPropertyContainer
                                 {
                                     Name = "1",
-                                    Children = new []
+                                    Path = "CustomerArrays[1][1]",
+                                    Children = new[]
                                     {
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Name"
+                                            Name = "Name",
+                                            Path = "CustomerArrays[1][1].Name"
                                         },
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Id"
+                                            Name = "Id",
+                                            Path = "CustomerArrays[1][1].Id"
                                         }
                                     }
-                                },
+                                }
                             }
                         },
                         new JsonPropertyContainer
                         {
                             Name = "2",
+                            Path = "CustomerArrays[2]",
                             Children = new[]
                             {
                                 new JsonPropertyContainer
                                 {
                                     Name = "0",
-                                    Children = new []
+                                    Path = "CustomerArrays[2][0]",
+                                    Children = new[]
                                     {
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Name"
+                                            Name = "Name",
+                                            Path = "CustomerArrays[2][0].Name"
                                         },
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Id"
+                                            Name = "Id",
+                                            Path = "CustomerArrays[2][0].Id"
                                         }
                                     }
                                 },
                                 new JsonPropertyContainer
                                 {
                                     Name = "1",
-                                    Children = new []
+                                    Path = "CustomerArrays[2][1]",
+                                    Children = new[]
                                     {
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Name"
+                                            Name = "Name",
+                                            Path = "CustomerArrays[2][1].Name"
                                         },
-                                        new JsonPropertyContainer()
+                                        new JsonPropertyContainer
                                         {
-                                            Name = "Id"
+                                            Name = "Id",
+                                            Path = "CustomerArrays[2][1].Id"
                                         }
                                     }
-                                },
+                                }
                             }
                         }
                     }
