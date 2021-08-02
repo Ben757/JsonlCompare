@@ -23,7 +23,7 @@
             <MatDrawer @bind-Opened="@Opened">
                 <div class="drawer">
                     <MatNavMenu Multi="true">
-                        @foreach (var property in propertyInfoService.GetPropertyContainer())
+                        @foreach (var property in propertyInfoService.PropertyInfos)
                         {
                             <PropertySelectionComponent JsonProperty="@property"></PropertySelectionComponent>
                         }

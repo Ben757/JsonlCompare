@@ -1,0 +1,69 @@
+﻿@using JsonlCompare.Client.Interfaces
+@using JsonlCompare.Client.Models
+@using System.Reactive.Linq
+@using System.Reactive.Disposables
+
+@implements IDisposable
+
+@inject IPropertyInfoService propertyInfoService
+@inject IPropertyChangeService propertyChangeService
+@inject IJsonContainer jsonContainer
+
+<MatTable Items="@jsonContainer.Jsons" class="mat-elevation-z5" ShowPaging="false"
+          UseSortHeaderRow="true" AllowSelection="true" Striped="true">
+    <MatTableHeader>
+        @foreach (var property in PropertyInfos())
+        {
+            if (property.Show && !property.HasChildren)
+            {
+                <th>@property.Path</th>
+            }
+        }
+    </MatTableHeader>
+    <MatTableRow>
+        @foreach (var property in PropertyInfos())
+        {
+            if (property.Show && !property.HasChildren)
+            {
+                <td>@context.SelectToken(property.Path)?.ToString()</td>
+            }
+        }
+    </MatTableRow>
+</MatTable>
+
+@code
+{
+    private readonly CompositeDisposable disposable = new();
+    
+    private IEnumerable<JsonPropertyInfo> PropertyInfos()
+    {
+        var jsonPropertyInfos = propertyInfoService.PropertyInfos;
+        return jsonPropertyInfos
+            .SelectMany(EnumerateChildren);
+    }
+
+    private static IEnumerable<JsonPropertyInfo> EnumerateChildren(JsonPropertyInfo propertyInfo)
+    {
+        yield return propertyInfo;
+        if (!propertyInfo.HasChildren) yield break;
+        
+        foreach (var propertyInfoChild in propertyInfo.Children)
+        {
+            foreach (var jsonPropertyInfo in EnumerateChildren(propertyInfoChild))
+                yield return jsonPropertyInfo;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        var subscription = propertyChangeService.PropertyChangeNotification
+            .Do(_ => StateHasChanged())
+            .Subscribe();
+        disposable.Add(subscription);
+    }
+
+    public void Dispose()
+    {
+        disposable.Dispose();
+    }
+}

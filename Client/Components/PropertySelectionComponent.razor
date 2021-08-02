@@ -1,10 +1,13 @@
 ﻿@using JsonlCompare.Client.Models
+@using JsonlCompare.Client.Interfaces
+
+@inject IPropertyChangeService propertyChangeService
 
 @if (!JsonProperty.HasChildren)
 {
     <MatNavItem>
         <div class="vbox">
-            <MatCheckbox @bind-Value="@JsonProperty.Show"></MatCheckbox>
+            <MatCheckbox @bind-Value="@ShowProperty"></MatCheckbox>
             <span class="nav-item-label">@JsonProperty.Name</span>
         </div>
     </MatNavItem>
@@ -13,9 +16,9 @@ else
 {
     <MatNavSubMenu>
         <MatNavSubMenuHeader>
-            <MatNavItem AllowSelection="true">
+            <MatNavItem AllowSelection="false">
                 <div class="vbox">
-                    <MatCheckbox @bind-Value="@JsonProperty.Show"></MatCheckbox>
+                    <MatCheckbox @bind-Value="@dummyValue" Disabled="true" Indeterminate="true"></MatCheckbox>
                     <span class="nav-item-label">@JsonProperty.Name</span>
                 </div>
             </MatNavItem>
@@ -30,6 +33,25 @@ else
 }
 
 @code {
+
     [Parameter]
-    public JsonPropertyInfo JsonProperty { get; set; }
+    public JsonPropertyInfo JsonProperty { get; set; } = new();
+
+    private bool? dummyValue = null; //some value has to be bound to make MatCheckbox work
+
+    public bool ShowProperty
+    {
+        get => JsonProperty.Show;
+        set
+        {
+            JsonProperty.Show = value;
+            propertyChangeService.SignalChange();
+        }
+    }
+
+    private void OnValueChanged()
+    {
+        propertyChangeService.SignalChange();
+    }
+
 }

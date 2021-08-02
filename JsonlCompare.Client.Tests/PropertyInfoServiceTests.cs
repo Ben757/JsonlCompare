@@ -33,7 +33,7 @@ namespace JsonlCompare.Client.Tests
                 });
 
             // Act
-            var result = sut.GetPropertyContainer().ToList();
+            var result = sut.PropertyInfos.ToList();
 
             //Assert
             var template = new[]
@@ -153,7 +153,7 @@ namespace JsonlCompare.Client.Tests
                 });
 
             // Act
-            var result = sut.GetPropertyContainer().ToList();
+            var result = sut.PropertyInfos.ToList();
 
             //Assert
             var template = new[]
@@ -283,7 +283,7 @@ namespace JsonlCompare.Client.Tests
                 });
 
             // Act
-            var result = sut.GetPropertyContainer().ToList();
+            var result = sut.PropertyInfos.ToList();
 
             //Assert
             var template = new[]
@@ -404,7 +404,7 @@ namespace JsonlCompare.Client.Tests
                 });
 
             // Act
-            var result = sut.GetPropertyContainer().ToList();
+            var result = sut.PropertyInfos.ToList();
 
             //Assert
             var template = new[]
@@ -526,7 +526,7 @@ namespace JsonlCompare.Client.Tests
                 });
 
             // Act
-            var result = sut.GetPropertyContainer().ToList();
+            var result = sut.PropertyInfos.ToList();
 
             //Assert
             var template = new[]

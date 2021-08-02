@@ -10,13 +10,17 @@ namespace JsonlCompare.Client.Services
     public class PropertyInfoService : IPropertyInfoService
     {
         private readonly IJsonContainer jsonContainer;
+        private readonly Lazy<IReadOnlyList<JsonPropertyInfo>> propertyInfos;
 
         public PropertyInfoService(IJsonContainer jsonContainer)
         {
             this.jsonContainer = jsonContainer;
+            propertyInfos = new Lazy<IReadOnlyList<JsonPropertyInfo>>(() => GetPropertyContainer().ToList());
         }
 
-        public IEnumerable<JsonPropertyInfo> GetPropertyContainer()
+        public IReadOnlyList<JsonPropertyInfo> PropertyInfos => propertyInfos.Value;
+
+        private IEnumerable<JsonPropertyInfo> GetPropertyContainer()
         {
             var jsons = jsonContainer.Jsons;
 

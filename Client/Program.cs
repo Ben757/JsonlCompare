@@ -20,6 +20,7 @@ namespace JsonlCompare.Client
             builder.Services.AddMatBlazor();
 
             builder.Services.AddSingleton<IPropertyInfoService, PropertyInfoService>();
+            builder.Services.AddSingleton<IPropertyChangeService, PropertyChangeService>();
             builder.Services.AddSingleton<IJsonContainer, JsonDummyContainer>();
 
             await builder.Build().RunAsync();

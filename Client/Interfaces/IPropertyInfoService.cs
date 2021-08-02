@@ -5,6 +5,6 @@ namespace JsonlCompare.Client.Interfaces
 {
     public interface IPropertyInfoService
     {
-        IEnumerable<JsonPropertyInfo> GetPropertyContainer();
+        IReadOnlyList<JsonPropertyInfo> PropertyInfos { get; }
     }
 }
