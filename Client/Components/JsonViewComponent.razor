@@ -1,0 +1,43 @@
+﻿@using JsonlCompare.Client.Interfaces
+@using System.Reactive.Linq
+@using System.Reactive.Disposables
+@using JsonlCompare.Client.Extensions
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@implements IDisposable
+
+@inject IJsonSelector jsonSelector
+
+<MatPaper Elevation="5" Style="height: 85vh; padding: 10px; overflow: auto">
+    @JsonViewContent
+</MatPaper>
+
+@code {
+
+    private readonly CompositeDisposable disposables = new();
+    private MarkupString JsonViewContent { get; set; } = (MarkupString) string.Empty;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        var subscription = jsonSelector.JsonObservable
+            .Select(JsonToString)
+            .Do(json => JsonViewContent = json)
+            .Do(_ => StateHasChanged())
+            .Subscribe();
+        disposables.Add(subscription);
+    }
+
+    private static MarkupString JsonToString(JObject? json)
+    {
+        return json?.ToString(Formatting.Indented)?.ToHtmlString() ?? (MarkupString) string.Empty;
+    }
+
+    public void Dispose()
+    {
+        disposables.Dispose();
+    }
+
+}

@@ -22,6 +22,7 @@ namespace JsonlCompare.Client
             builder.Services.AddSingleton<IPropertyInfoService, PropertyInfoService>();
             builder.Services.AddSingleton<IPropertyChangeService, PropertyChangeService>();
             builder.Services.AddSingleton<IJsonContainer, JsonDummyContainer>();
+            builder.Services.AddSingleton<IJsonSelector, JsonSelector>();
 
             await builder.Build().RunAsync();
         }

@@ -27,8 +27,4 @@
     <None Include="wwwroot\dummy.jsonl" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Extensions" />
-  </ItemGroup>
-
 </Project>

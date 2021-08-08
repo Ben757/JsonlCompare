@@ -2,15 +2,17 @@
 @using JsonlCompare.Client.Models
 @using System.Reactive.Linq
 @using System.Reactive.Disposables
+@using Newtonsoft.Json.Linq
 
 @implements IDisposable
 
 @inject IPropertyInfoService propertyInfoService
 @inject IPropertyChangeService propertyChangeService
 @inject IJsonContainer jsonContainer
+@inject IJsonSelector jsonSelector
 
 <MatTable Items="@jsonContainer.Jsons" class="mat-elevation-z5" ShowPaging="false"
-          UseSortHeaderRow="true" AllowSelection="true" Striped="true">
+          UseSortHeaderRow="true" AllowSelection="true" Striped="true" SelectionChanged="OnSelectionChanged">
     <MatTableHeader>
         @foreach (var property in PropertyInfos())
         {
@@ -65,5 +67,10 @@
     public void Dispose()
     {
         disposable.Dispose();
+    }
+
+    private void OnSelectionChanged(object row)
+    {
+        jsonSelector.SetJson((JObject)row);
     }
 }
