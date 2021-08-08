@@ -9,7 +9,7 @@
 
 @inject IJsonSelector jsonSelector
 
-<MatPaper Elevation="5" Style="height: 85vh; padding: 10px; overflow: auto">
+<MatPaper Elevation="5" Rounded="true" Class="jsonview">
     @JsonViewContent
 </MatPaper>
 
@@ -32,7 +32,7 @@
 
     private static MarkupString JsonToString(JObject? json)
     {
-        return json?.ToString(Formatting.Indented)?.ToHtmlString() ?? (MarkupString) string.Empty;
+        return json?.ToString(Formatting.Indented).ToHtmlString() ?? (MarkupString) string.Empty;
     }
 
     public void Dispose()
