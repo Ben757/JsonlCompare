@@ -11,9 +11,9 @@
 @inject IJsonContainer jsonContainer
 @inject IJsonSelector jsonSelector
 
-<MatTable Items="@jsonContainer.Jsons" class="mat-elevation-z5" ShowPaging="true"
-          UseSortHeaderRow="true" AllowSelection="true" Striped="true" SelectionChanged="OnSelectionChanged"
-          PageSize="25">
+<MatTable Items="@jsonContainer.Jsons" class="mat-elevation-z5" ShowPaging="true" 
+          AllowSelection="true" Striped="true" SelectionChanged="OnSelectionChanged"
+          PageSize="5">
     <MatTableHeader>
         @foreach (var property in PropertyInfos())
         {

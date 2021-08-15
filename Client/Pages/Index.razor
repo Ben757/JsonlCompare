@@ -2,6 +2,15 @@
 
 @page "/"
 
+<div>
+    <MatPaper Elevation="5" Rounded="true" Class="info-container">
+        <h1>Jsonl Compare</h1>
+        <p>This web app allows comparing json data in a .jsonl file. Upload a file here by dragging and dropping it here.
+            The json data is packed in a table. Differing properties are merged. The side bar allows deselecting properties
+            that shall not be shown in the table. Open it by clicking on the hamburger button.
+            Select a json to show its content on the right side as formatted json.</p>
+    </MatPaper>
+</div>
 <div class="property-table">
     <JsonlTableComponent/>
 </div>
