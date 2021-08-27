@@ -1,14 +1,27 @@
 ﻿@using JsonlCompare.Client.Components
+@using JsonlCompare.Client.Interfaces
+@using System.IO
+@using Newtonsoft.Json.Linq
+
+@inject IJsonContainer jsonContainer
+@inject IJsonContentChangeService jsonContentChangeService
 
 @page "/"
 
 <div>
     <MatPaper Elevation="5" Rounded="true" Class="info-container">
-        <h1>Jsonl Compare</h1>
-        <p>This web app allows comparing json data in a .jsonl file. Upload a file here by dragging and dropping it here.
-            The json data is packed in a table. Differing properties are merged. The side bar allows deselecting properties
-            that shall not be shown in the table. Open it by clicking on the hamburger button.
-            Select a json to show its content on the right side as formatted json.</p>
+        <div>
+            <div>
+                <InputFile OnChange="LoadFiles"
+                           @ondragenter="HandleDragEnter"
+                           @ondragleave="HandleDragLeave"></InputFile>
+                <h1>Jsonl Compare</h1>
+                <p>This web app allows comparing json data in a .jsonl file. Upload a file here by dragging and dropping it here.
+                    The json data is packed in a table. Differing properties are merged. The side bar allows deselecting properties
+                    that shall not be shown in the table. Open it by clicking on the hamburger button.
+                    Select a json to show its content on the right side as formatted json.</p>
+            </div>
+        </div>
     </MatPaper>
 </div>
 <div class="property-table">
@@ -17,3 +30,51 @@
 <div class="stick-to-right">
     <JsonViewComponent/>
 </div>
+
+@code {
+
+    private async Task LoadFiles(InputFileChangeEventArgs arg)
+    {
+        List<IBrowserFile> selectedFiles = new();
+        
+        foreach (var file in arg.GetMultipleFiles())
+        {
+            var error = file.Size > MaxFileSize;
+
+            if (!error)
+            {
+                selectedFiles.Add(file);
+            }
+        }
+
+        var tasks = selectedFiles.Select(x => x.OpenReadStream())
+            .Select(x => new StreamReader(x))
+            .Select(x => x.ReadToEndAsync());
+
+        var jsons = 
+        (await Task.WhenAll(tasks))
+            .SelectMany(x => x.Split("\n"))
+            .Select(JObject.Parse)
+            .ToList();
+        
+        foreach (var jObject in jsons)
+        {
+            jsonContainer.Add(jObject);
+        }
+        
+        jsonContentChangeService.SignalChange();
+    }
+
+    private long MaxFileSize { get; } = 10 * 1024 * 1024;
+
+    private Task HandleDragEnter(DragEventArgs arg)
+    {
+        return Task.CompletedTask;
+    }
+
+    private Task HandleDragLeave(DragEventArgs arg)
+    {
+        return Task.CompletedTask;
+    }
+
+}

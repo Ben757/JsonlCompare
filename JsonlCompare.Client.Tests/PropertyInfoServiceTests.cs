@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using DeepEqual.Syntax;
 using JsonlCompare.Client.Interfaces;
 using JsonlCompare.Client.Models;
@@ -7,6 +11,7 @@ using JsonlCompare.Client.Services;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using Shouldly;
 
 namespace JsonlCompare.Client.Tests
 {
@@ -18,7 +23,12 @@ namespace JsonlCompare.Client.Tests
         {
             // Arrange
             var jsonContainerMock = new Mock<IJsonContainer>();
-            var sut = new PropertyInfoService(jsonContainerMock.Object);
+            var contentChangeMock = new Mock<IJsonContentChangeService>();
+            var subject = new Subject<Unit>();
+            contentChangeMock
+                .Setup(x => x.JsonContentChangeNotification)
+                .Returns(subject.AsObservable());
+            using var sut = new PropertyInfoService(jsonContainerMock.Object, contentChangeMock.Object);
 
             jsonContainerMock
                 .Setup(x => x.Jsons)
@@ -132,14 +142,18 @@ namespace JsonlCompare.Client.Tests
             result.ShouldDeepEqual(template);
         }
 
-
         [Test]
         public void GetPropertyContainer_ArraysWithObjects_MergeAndReturnContainer()
         {
             // Arrange
             var jsonContainerMock = new Mock<IJsonContainer>();
-            var sut = new PropertyInfoService(jsonContainerMock.Object);
-
+            var contentChangeMock = new Mock<IJsonContentChangeService>();
+            var subject = new Subject<Unit>();
+            contentChangeMock
+                .Setup(x => x.JsonContentChangeNotification)
+                .Returns(subject.AsObservable());
+            using var sut = new PropertyInfoService(jsonContainerMock.Object, contentChangeMock.Object);
+            
             jsonContainerMock
                 .Setup(x => x.Jsons)
                 .Returns(new List<JObject>
@@ -268,7 +282,12 @@ namespace JsonlCompare.Client.Tests
         {
             // Arrange
             var jsonContainerMock = new Mock<IJsonContainer>();
-            var sut = new PropertyInfoService(jsonContainerMock.Object);
+            var contentChangeMock = new Mock<IJsonContentChangeService>();
+            var subject = new Subject<Unit>();
+            contentChangeMock
+                .Setup(x => x.JsonContentChangeNotification)
+                .Returns(subject.AsObservable());
+            using var sut = new PropertyInfoService(jsonContainerMock.Object, contentChangeMock.Object);
 
             jsonContainerMock
                 .Setup(x => x.Jsons)
@@ -389,7 +408,12 @@ namespace JsonlCompare.Client.Tests
         {
             // Arrange
             var jsonContainerMock = new Mock<IJsonContainer>();
-            var sut = new PropertyInfoService(jsonContainerMock.Object);
+            var contentChangeMock = new Mock<IJsonContentChangeService>();
+            var subject = new Subject<Unit>();
+            contentChangeMock
+                .Setup(x => x.JsonContentChangeNotification)
+                .Returns(subject.AsObservable());
+            using var sut = new PropertyInfoService(jsonContainerMock.Object, contentChangeMock.Object);
 
             jsonContainerMock
                 .Setup(x => x.Jsons)
@@ -511,8 +535,13 @@ namespace JsonlCompare.Client.Tests
         {
             // Arrange
             var jsonContainerMock = new Mock<IJsonContainer>();
-            var sut = new PropertyInfoService(jsonContainerMock.Object);
-
+            var contentChangeMock = new Mock<IJsonContentChangeService>();
+            var subject = new Subject<Unit>();
+            contentChangeMock
+                .Setup(x => x.JsonContentChangeNotification)
+                .Returns(subject.AsObservable());
+            using var sut = new PropertyInfoService(jsonContainerMock.Object, contentChangeMock.Object);
+            
             jsonContainerMock
                 .Setup(x => x.Jsons)
                 .Returns(new List<JObject>
@@ -520,7 +549,7 @@ namespace JsonlCompare.Client.Tests
                     JObject.Parse(
                         "{\n    \"PseudoOrderNumber\": \"d895e88000f04bc1a96130b9e8a08ec6\",\n    \"CustomerArrays\": [\n    \t[{\"Name\" : \"First\", \"Id\": 12}, {\"Name\" : \"Second\", \"Id\": 13}],\n    \t[{\"Name\" : \"Thirs\", \"Id\": 14}, {\"Name\" : \"Fourth\", \"Id\": 15}],\n    ]\n}"),
                     JObject.Parse(
-                        "{\n    \"PseudoOrderNumber\": \"d895e88000f04bc1a96130b9e8a08ec6\",\n    \"CustomerArrays\": [\n    \t[{\"Name\" : \"First\", \"Id\": 12}, {\"Name\" : \"Second\", \"Id\": 13}],\n    \t[{\"Name\" : \"Third\", \"Id\": 14}, {\"Name\" : \"Fourth\", \"Id\": 15}],\n    \t[{\"Name\" : \"Fivth\", \"Id\": 16}, {\"Name\" : \"Sixth\", \"Id\": 17}],\n    ]\n}"),
+                        "{\n    \"PseudoOrderNumber\": \"d895e88000f04bc1a96130b9e8a08ec6\",\n    \"CustomerArrays\": [\n    \t[{\"Name\" : \"First\", \"Id\": 12}, {\"Name\" : \"Second\", \"Id\": 13}],\n    \t[{\"Name\" : \"Third\", \"Id\": 14}, {\"Name\" : \"Fourth\", \"Id\": 15}],\n    \t[{\"Name\" : \"Fifth\", \"Id\": 16}, {\"Name\" : \"Sixth\", \"Id\": 17}],\n    ]\n}"),
                     JObject.Parse(
                         "{\n    \"PseudoOrderNumber\": \"d895e88000f04bc1a96130b9e8a08ec6\",\n    \"CustomerArrays\": [\n    \t[{\"Name\" : \"First\", \"Id\": 12}, {\"Name\" : \"Second\", \"Id\": 13}, {\"Name\": \"Tenth\", \"Id\": 23}]\n    ]\n}")
                 });
@@ -697,6 +726,138 @@ namespace JsonlCompare.Client.Tests
             };
 
             result.ShouldDeepEqual(template);
+        }
+
+        [Test]
+        public void JsonContentChanges_LazyContentIsRenewed()
+        {
+            // Arrange
+            var jsonContainerMock = new Mock<IJsonContainer>();
+            var contentChangeMock = new Mock<IJsonContentChangeService>();
+            var subject = new Subject<Unit>();
+            contentChangeMock
+                .Setup(x => x.JsonContentChangeNotification)
+                .Returns(subject.AsObservable());
+            using var sut = new PropertyInfoService(jsonContainerMock.Object, contentChangeMock.Object);
+
+
+            jsonContainerMock
+                .SetupSequence(x => x.Jsons)
+                .Returns(Enumerable.Empty<JObject>().ToList())
+                .Returns(new List<JObject>
+                {
+                    JObject.Parse(
+                        "{\"PseudoOrderNumber\":\"d895e88000f04bc1a96130b9e8a08ec6\",\"DateOfOrder\":\"2021-05-27T22:00:00Z\",\"IsInternal\":false,\"ToDo\":\"Very crazy\",\"MailAddress\":\"someone@mail.com\",\"Operator\":\"operator\",\"Customer\":{\"Name\":\"Someone\",\"CustomerId\":\"304960\"}}"),
+                    JObject.Parse(
+                        "{\"PseudoOrderNumber\":\"d895e88000f04bc1a96130b9e8a08ec6\",\"DateOfOrder\":\"2021-05-27T22:00:00Z\",\"IsInternal\":true,\"ToDo\":\"Some very fine task\",\"MailAddress\":\"someone@mail.com\",\"Operator\":\"operator\",\"Machine\":{\"SerialNumber\":\"0066P00163\",\"OperatingHours\":120,\"Location\":\"Somewhere\"}}\n"),
+                    JObject.Parse(
+                        "{\"PseudoOrderNumber\":\"d895e88000f04bc1a96130b9e8a08ec6\",\"DateOfOrder\":\"2021-05-27T22:00:00Z\",\"IsInternal\":true,\"ToDo\":\"Some very fine task\",\"MailAddress\":\"someone@mail.com\",\"Operator\":\"operator\",\"Machine\":{\"SerialNumber\":\"0066P00163\",\"OperatingHours\":120,\"Location\":\"Somewhere\",\"Customer\":{\"Name\":\"Someone\",\"CustomerId\":\"304960\"}}}\n")
+                });
+
+            // Act
+            var preResult = sut.PropertyInfos.ToList();
+            subject.OnNext(Unit.Default);
+            Task.Delay(100).Wait();
+            var result = sut.PropertyInfos.ToList();
+
+            //Assert
+            var template = new[]
+            {
+                new JsonPropertyInfo
+                {
+                    Name = "PseudoOrderNumber",
+                    Path = "PseudoOrderNumber"
+                },
+                new JsonPropertyInfo
+                {
+                    Name = "DateOfOrder",
+                    Path = "DateOfOrder"
+                },
+                new JsonPropertyInfo
+                {
+                    Name = "IsInternal",
+                    Path = "IsInternal"
+                },
+                new JsonPropertyInfo
+                {
+                    Name = "ToDo",
+                    Path = "ToDo"
+                },
+                new JsonPropertyInfo
+                {
+                    Name = "MailAddress",
+                    Path = "MailAddress"
+                },
+                new JsonPropertyInfo
+                {
+                    Name = "Operator",
+                    Path = "Operator"
+                },
+                new JsonPropertyInfo
+                {
+                    Name = "Customer",
+                    Path = "Customer",
+                    Children = new[]
+                    {
+                        new JsonPropertyInfo
+                        {
+                            Name = "Name",
+                            Path = "Customer.Name"
+                        },
+                        new JsonPropertyInfo
+                        {
+                            Name = "CustomerId",
+                            Path = "Customer.CustomerId"
+                        }
+                    }
+                },
+                new JsonPropertyInfo
+                {
+                    Name = "Machine",
+                    Path = "Machine",
+                    Children = new[]
+                    {
+                        new JsonPropertyInfo
+                        {
+                            Name = "SerialNumber",
+                            Path = "Machine.SerialNumber"
+                        },
+                        new JsonPropertyInfo
+                        {
+                            Name = "OperatingHours",
+                            Path = "Machine.OperatingHours"
+                        },
+                        new JsonPropertyInfo
+                        {
+                            Name = "Location",
+                            Path = "Machine.Location"
+                        },
+                        new JsonPropertyInfo
+                        {
+                            Name = "Customer",
+                            Path = "Machine.Customer",
+                            Children = new[]
+                            {
+                                new JsonPropertyInfo
+                                {
+                                    Name = "Name",
+                                    Path = "Machine.Customer.Name"
+                                },
+                                new JsonPropertyInfo
+                                {
+                                    Name = "CustomerId",
+                                    Path = "Machine.Customer.CustomerId"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            preResult.ShouldBeEmpty();
+
+            result.ShouldDeepEqual(template);
+
         }
     }
 }

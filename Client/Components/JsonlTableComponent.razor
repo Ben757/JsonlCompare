@@ -8,6 +8,7 @@
 
 @inject IPropertyInfoService propertyInfoService
 @inject IPropertyChangeService propertyChangeService
+@inject IJsonContentChangeService jsonContentChangeService
 @inject IJsonContainer jsonContainer
 @inject IJsonSelector jsonSelector
 
@@ -59,10 +60,16 @@
 
     protected override void OnInitialized()
     {
-        var subscription = propertyChangeService.PropertyChangeNotification
+        var propertyChangeSubscription = propertyChangeService.PropertyChangeNotification
             .Do(_ => StateHasChanged())
             .Subscribe();
-        disposable.Add(subscription);
+        
+        var jsonContentChangeSubscription = jsonContentChangeService.JsonContentChangeNotification
+            .Do(_ => StateHasChanged())
+            .Subscribe();
+        
+        disposable.Add(propertyChangeSubscription);
+        disposable.Add(jsonContentChangeSubscription);
     }
 
     public void Dispose()

@@ -1,21 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using JsonlCompare.Client.Interfaces;
 using JsonlCompare.Client.Models;
 using Newtonsoft.Json.Linq;
 
 namespace JsonlCompare.Client.Services
 {
-    public class PropertyInfoService : IPropertyInfoService
+    public class PropertyInfoService : IPropertyInfoService, IDisposable
     {
         private readonly IJsonContainer jsonContainer;
-        private readonly Lazy<IReadOnlyList<JsonPropertyInfo>> propertyInfos;
+        private readonly IJsonContentChangeService jsonContentChangeService;
+        
+        private Lazy<IReadOnlyList<JsonPropertyInfo>> propertyInfos;
+        private readonly IDisposable subscription;
 
-        public PropertyInfoService(IJsonContainer jsonContainer)
+        public PropertyInfoService(IJsonContainer jsonContainer, IJsonContentChangeService jsonContentChangeService)
         {
             this.jsonContainer = jsonContainer;
+            this.jsonContentChangeService = jsonContentChangeService;
             propertyInfos = new Lazy<IReadOnlyList<JsonPropertyInfo>>(() => GetPropertyContainer().ToList());
+
+            subscription = jsonContentChangeService.JsonContentChangeNotification
+                .Do(_ => propertyInfos = new Lazy<IReadOnlyList<JsonPropertyInfo>>(() => GetPropertyContainer().ToList()))
+                .Subscribe();
         }
 
         public IReadOnlyList<JsonPropertyInfo> PropertyInfos => propertyInfos.Value;
@@ -23,6 +32,9 @@ namespace JsonlCompare.Client.Services
         private IEnumerable<JsonPropertyInfo> GetPropertyContainer()
         {
             var jsons = jsonContainer.Jsons;
+
+            if (!jsons.Any())
+                return Enumerable.Empty<JsonPropertyInfo>();
 
             var maxJson = CombineJsons(jsons);
 
@@ -111,6 +123,11 @@ namespace JsonlCompare.Client.Services
             }
 
             return childrenList;
+        }
+
+        public void Dispose()
+        {
+            subscription.Dispose();
         }
     }
 }

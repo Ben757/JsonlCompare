@@ -8,6 +8,7 @@
 @implements IDisposable
 
 @inject IJsonSelector jsonSelector
+@inject IJsonContentChangeService jsonContentChangeService
 
 <MatPaper Elevation="5" Rounded="true" Class="json-view">
     @JsonViewContent
@@ -22,12 +23,18 @@
     {
         base.OnInitialized();
 
-        var subscription = jsonSelector.JsonObservable
+        var jsonSelectionSubscription = jsonSelector.JsonObservable
             .Select(JsonToString)
             .Do(json => JsonViewContent = json)
             .Do(_ => StateHasChanged())
             .Subscribe();
-        disposables.Add(subscription);
+
+        var jsonContentSubscription = jsonContentChangeService.JsonContentChangeNotification
+            .Do(_ => StateHasChanged())
+            .Subscribe();
+        
+        disposables.Add(jsonSelectionSubscription);
+        disposables.Add(jsonContentSubscription);
     }
 
     private static MarkupString JsonToString(JObject? json)

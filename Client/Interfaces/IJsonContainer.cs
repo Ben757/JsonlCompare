@@ -6,5 +6,6 @@ namespace JsonlCompare.Client.Interfaces
     public interface IJsonContainer
     {
         IReadOnlyList<JObject> Jsons { get; }
+        void Add(JObject json);
     }
 }
