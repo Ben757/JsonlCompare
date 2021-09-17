@@ -16,3 +16,8 @@
     padding: calc(1rem - 3px);
     border: 3px dashed steelblue;    
 }
+
+
+td {
+    white-space: nowrap;
+}
