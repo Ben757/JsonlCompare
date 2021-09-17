@@ -7,5 +7,6 @@ namespace JsonlCompare.Client.Interfaces
     {
         IReadOnlyList<JObject> Jsons { get; }
         void Add(JObject json);
+        void Clear();
     }
 }

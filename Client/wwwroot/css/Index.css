@@ -1,0 +1,18 @@
+﻿.dropzone {
+    padding: 1rem;
+}
+
+.dropzone * {
+    pointer-events: none;
+}
+
+.dropzone:hover {
+    padding: calc(1rem - 3px);
+    border: 3px dashed steelblue;
+}
+
+.dropzone-drag{
+    background-color: #f3f3f3;
+    padding: calc(1rem - 3px);
+    border: 3px dashed steelblue;    
+}

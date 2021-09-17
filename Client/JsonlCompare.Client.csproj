@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\Index.css" />
     <None Include="wwwroot\dummy.jsonl" />
   </ItemGroup>
 

@@ -1,20 +1,21 @@
 ﻿@using JsonlCompare.Client.Components
 @using JsonlCompare.Client.Interfaces
-@using System.IO
+@using Microsoft.Extensions.Logging
 @using Newtonsoft.Json.Linq
 
 @inject IJsonContainer jsonContainer
 @inject IJsonContentChangeService jsonContentChangeService
+@inject IJSRuntime runtime
+
+@inject ILogger<Index> logger
 
 @page "/"
 
+<link href="css/Index.css" rel="stylesheet">
 <div>
     <MatPaper Elevation="5" Rounded="true" Class="info-container">
         <div>
-            <div>
-                <InputFile OnChange="LoadFiles"
-                           @ondragenter="HandleDragEnter"
-                           @ondragleave="HandleDragLeave"></InputFile>
+            <div class="dropzone" @ref="dropZoneElement">
                 <h1>Jsonl Compare</h1>
                 <p>This web app allows comparing json data in a .jsonl file. Upload a file here by dragging and dropping it here.
                     The json data is packed in a table. Differing properties are merged. The side bar allows deselecting properties
@@ -32,49 +33,41 @@
 </div>
 
 @code {
+    private ElementReference dropZoneElement;
 
-    private async Task LoadFiles(InputFileChangeEventArgs arg)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        List<IBrowserFile> selectedFiles = new();
-        
-        foreach (var file in arg.GetMultipleFiles())
+        if (firstRender)
         {
-            var error = file.Size > MaxFileSize;
+            var module = await runtime.InvokeAsync<IJSObjectReference>("import", new[] { "./dropzone.js" });
 
-            if (!error)
-            {
-                selectedFiles.Add(file);
-            }
+            var selfReference = DotNetObjectReference.Create(this);
+            
+            await module.InvokeAsync<IJSObjectReference>("initializeFileDropZone", dropZoneElement, selfReference);
         }
+    }
 
-        var tasks = selectedFiles.Select(x => x.OpenReadStream())
-            .Select(x => new StreamReader(x))
-            .Select(x => x.ReadToEndAsync());
+    [JSInvokable]
+    public void ClearContainer()
+    {
+        jsonContainer.Clear();
+    }
 
-        var jsons = 
-        (await Task.WhenAll(tasks))
-            .SelectMany(x => x.Split("\n"))
-            .Select(JObject.Parse)
-            .ToList();
-        
-        foreach (var jObject in jsons)
+    [JSInvokable]
+    public void AddFile(string content)
+    {
+        foreach (var json in content.Split("\n"))
         {
-            jsonContainer.Add(jObject);
+            try
+            {
+                jsonContainer.Add(JObject.Parse(json));
+            }
+            catch (Exception e)
+            {
+                logger.LogInformation(e, "Could not parse json {Json}", json);
+            }
         }
         
         jsonContentChangeService.SignalChange();
     }
-
-    private long MaxFileSize { get; } = 10 * 1024 * 1024;
-
-    private Task HandleDragEnter(DragEventArgs arg)
-    {
-        return Task.CompletedTask;
-    }
-
-    private Task HandleDragLeave(DragEventArgs arg)
-    {
-        return Task.CompletedTask;
-    }
-
 }
