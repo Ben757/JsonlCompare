@@ -7,6 +7,8 @@
 @inject IJsonContentChangeService jsonContentChangeService
 @inject IJSRuntime runtime
 
+@inject IMatDialogService matDialogService
+
 @inject ILogger<Index> logger
 
 @page "/"
@@ -54,8 +56,9 @@
     }
 
     [JSInvokable]
-    public void AddFile(string content)
+    public async Task AddFile(string content)
     {
+        var errorCount = 0;
         foreach (var json in content.Split("\n"))
         {
             try
@@ -64,9 +67,13 @@
             }
             catch (Exception e)
             {
+                errorCount++;
                 logger.LogInformation(e, "Could not parse json {Json}", json);
             }
         }
+        
+        if(errorCount > 0)
+            await matDialogService.AlertAsync($"Could not parse {errorCount} jsons from the given file");
         
         jsonContentChangeService.SignalChange();
     }
