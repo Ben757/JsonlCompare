@@ -1,0 +1,34 @@
+﻿@using JsonlCompare.Client.Interfaces
+@using System.Reactive.Disposables
+@using System.Reactive.Linq
+
+@implements IDisposable
+
+@inject IPropertyInfoService propertyInfoService
+@inject IJsonContentChangeService jsonContentChangeService
+
+@foreach (var property in propertyInfoService.PropertyInfos)
+{
+    <PropertySelectionComponent JsonProperty="@property"></PropertySelectionComponent>
+}
+
+@code {
+    private readonly CompositeDisposable disposable = new();
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        var jsonContentChangeSubscription = jsonContentChangeService.JsonContentChangeNotification
+            .Do(_ => StateHasChanged())
+            .Subscribe();
+        
+        disposable.Add(jsonContentChangeSubscription);
+    }
+
+    public void Dispose()
+    {
+        disposable.Dispose();
+    }
+
+}
