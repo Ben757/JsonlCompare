@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Fluxor;
 using JsonlCompare.Client.Interfaces;
 using JsonlCompare.Client.Services;
 using MatBlazor;
@@ -15,6 +16,8 @@ namespace JsonlCompare.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
+
+            builder.Services.AddFluxor(o => o.ScanAssemblies(typeof(Program).Assembly));
 
             builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddMatBlazor();
