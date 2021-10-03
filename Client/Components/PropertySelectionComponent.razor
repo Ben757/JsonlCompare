@@ -1,12 +1,9 @@
 ﻿@using JsonlCompare.Client.Models
 @using JsonlCompare.Client.Interfaces
-@using System.Reactive.Linq
 @using System.Reactive.Disposables
+@using JsonlCompare.Client.Actions.JsonPropertyActions
 
-@implements IDisposable
-
-@inject IPropertyChangeService propertyChangeService
-@inject IJsonContentChangeService jsonContentChangeService
+@inject IDispatcher dispatcher
 
 @if (!JsonProperty.HasChildren)
 {
@@ -39,8 +36,6 @@ else
 
 @code 
 {
-    private readonly CompositeDisposable disposable = new();
-
     [Parameter]
     public JsonPropertyInfo JsonProperty { get; set; } = new();
 
@@ -52,26 +47,7 @@ else
         set
         {
             JsonProperty.Show = value;
-            propertyChangeService.SignalChange();
+            dispatcher.Dispatch(new JsonPropertyUpdateShowAction(JsonProperty));
         }
-    }
-    
-    private void OnValueChanged()
-    {
-        propertyChangeService.SignalChange();
-    }
-
-    protected override void OnInitialized()
-    {
-        var jsonContentChangeSubscription = jsonContentChangeService.JsonContentChangeNotification
-            .Do(_ => StateHasChanged())
-            .Subscribe();
-        
-        disposable.Add(jsonContentChangeSubscription);
-    }
-
-    public void Dispose()
-    {
-        disposable.Dispose();
     }
 }

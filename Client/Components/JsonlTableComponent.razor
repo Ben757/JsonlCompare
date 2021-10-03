@@ -1,20 +1,21 @@
-﻿@using JsonlCompare.Client.Interfaces
-@using JsonlCompare.Client.Models
-@using System.Reactive.Linq
+﻿@using JsonlCompare.Client.Models
 @using System.Reactive.Disposables
+@using JsonlCompare.Client.Actions.SelectedJson
+@using JsonlCompare.Client.Extensions
+@using JsonlCompare.Client.Selectors
+@using JsonlCompare.Client.Services
 @using JsonlCompare.Client.Store.Json
+@using JsonlCompare.Client.Store.JsonProperty
 @using Newtonsoft.Json.Linq
 
 @implements IDisposable
 
-@inject IPropertyInfoService propertyInfoService
-@inject IPropertyChangeService propertyChangeService
-@inject IJsonContentChangeService jsonContentChangeService
-@inject IJsonSelector jsonSelector
+@inject IState<JsonState> jsonState
+@inject IState<JsonPropertyState> jsonPropertyState
 
-@inject IState<JsonState> jsonStore
+@inject IDispatcher dispatcher
 
-<MatTable Items="@jsonStore.Value.Jsons" class="mat-elevation-z5" ShowPaging="true" 
+<MatTable Items="@jsonState.Value.Jsons" class="mat-elevation-z5" ShowPaging="true" 
           AllowSelection="true" Striped="true" SelectionChanged="OnSelectionChanged"
           PageSize="5">
     <MatTableHeader>
@@ -39,36 +40,22 @@
 
 @code
 {
-    private readonly CompositeDisposable disposable = new();
-    
+
     private IEnumerable<JsonPropertyInfo> PropertyInfos()
     {
-        var jsonPropertyInfos = propertyInfoService.PropertyInfos;
-        return jsonPropertyInfos
-            .SelectMany(EnumerateChildren);
-    }
-
-    private static IEnumerable<JsonPropertyInfo> EnumerateChildren(JsonPropertyInfo propertyInfo)
-    {
-        yield return propertyInfo;
-        if (!propertyInfo.HasChildren) yield break;
-        
-        foreach (var propertyInfoChild in propertyInfo.Children)
-        {
-            foreach (var jsonPropertyInfo in EnumerateChildren(propertyInfoChild))
-                yield return jsonPropertyInfo;
-        }
+        return jsonPropertyState.Value.PropertyInfos
+            .SelectMany(x => x.EnumerateChildren());
     }
 
     protected override void OnInitialized()
     {
-        jsonStore.StateChanged += StateChangedEventHandler;
-        
-        var jsonContentChangeSubscription = jsonContentChangeService.JsonContentChangeNotification
-            .Do(_ => StateHasChanged())
-            .Subscribe();
-        
-        disposable.Add(jsonContentChangeSubscription);
+        jsonState.StateChanged += StateChangedEventHandler;
+        jsonPropertyState.StateChanged += PropertyStateChangedEventHandler;
+    }
+
+    private void PropertyStateChangedEventHandler(object? sender, JsonPropertyState state)
+    {
+        StateHasChanged();
     }
 
     private void StateChangedEventHandler(object? sender, JsonState state)
@@ -78,11 +65,12 @@
 
     public void Dispose()
     {
-        jsonStore.StateChanged -= StateChangedEventHandler;
+        jsonState.StateChanged -= StateChangedEventHandler;
+        jsonPropertyState.StateChanged -= PropertyStateChangedEventHandler;
     }
 
     private void OnSelectionChanged(object row)
     {
-        jsonSelector.SetJson((JObject)row);
+        dispatcher.Dispatch(new SelectedJsonSetAction((JObject)row));
     }
 }

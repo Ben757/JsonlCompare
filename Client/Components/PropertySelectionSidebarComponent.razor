@@ -1,34 +1,36 @@
-﻿@using JsonlCompare.Client.Interfaces
-@using System.Reactive.Disposables
-@using System.Reactive.Linq
+﻿@using System.Reactive.Disposables
+@using System.Reflection
+@using JsonlCompare.Client.Models
+@using JsonlCompare.Client.Selectors
+@using JsonlCompare.Client.Services
+@using JsonlCompare.Client.Store.Json
+@using JsonlCompare.Client.Store.JsonProperty
 
 @implements IDisposable
 
-@inject IPropertyInfoService propertyInfoService
-@inject IJsonContentChangeService jsonContentChangeService
+@inject IState<JsonPropertyState> jsonPropertyState
 
-@foreach (var property in propertyInfoService.PropertyInfos)
+@foreach (var property in jsonPropertyState.Value.PropertyInfos)
 {
     <PropertySelectionComponent JsonProperty="@property"></PropertySelectionComponent>
 }
 
 @code {
-    private readonly CompositeDisposable disposable = new();
+
+    private void StateChangedEventHandler(object? sender, JsonPropertyState state)
+    {
+        StateHasChanged();
+    }
     
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
-        var jsonContentChangeSubscription = jsonContentChangeService.JsonContentChangeNotification
-            .Do(_ => StateHasChanged())
-            .Subscribe();
         
-        disposable.Add(jsonContentChangeSubscription);
+        jsonPropertyState.StateChanged += StateChangedEventHandler;
     }
 
     public void Dispose()
     {
-        disposable.Dispose();
+        jsonPropertyState.StateChanged -= StateChangedEventHandler;
     }
-
 }

@@ -1,11 +1,8 @@
 ﻿@using JsonlCompare.Client.Components
-@using JsonlCompare.Client.Interfaces
 @using Microsoft.Extensions.Logging
 @using Newtonsoft.Json.Linq
 @using JsonlCompare.Client.Actions.JsonActions
 
-@inject IJsonContainer jsonContainer
-@inject IJsonContentChangeService jsonContentChangeService
 @inject IJSRuntime runtime
 
 @inject IMatDialogService matDialogService
@@ -62,7 +59,6 @@
         {
             try
             {
-                jsonContainer.Add(JObject.Parse(json));
                 newJsons.Add(JObject.Parse(json));
             }
             catch (Exception e)
@@ -75,8 +71,6 @@
         if(errorCount > 0)
             await matDialogService.AlertAsync($"Could not parse {errorCount} jsons from the given file");
         
-        jsonContentChangeService.SignalChange();
-        
-        dispatcher.Dispatch(new JsonSetAction(newJsons));
+        dispatcher.Dispatch(new JsonUpdateAction(newJsons));
     }
 }
