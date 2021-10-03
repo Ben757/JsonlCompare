@@ -2,6 +2,7 @@
 @using JsonlCompare.Client.Models
 @using System.Reactive.Linq
 @using System.Reactive.Disposables
+@using JsonlCompare.Client.Store.Json
 @using Newtonsoft.Json.Linq
 
 @implements IDisposable
@@ -9,10 +10,11 @@
 @inject IPropertyInfoService propertyInfoService
 @inject IPropertyChangeService propertyChangeService
 @inject IJsonContentChangeService jsonContentChangeService
-@inject IJsonContainer jsonContainer
 @inject IJsonSelector jsonSelector
 
-<MatTable Items="@jsonContainer.Jsons" class="mat-elevation-z5" ShowPaging="true" 
+@inject IState<JsonState> jsonStore
+
+<MatTable Items="@jsonStore.Value.Jsons" class="mat-elevation-z5" ShowPaging="true" 
           AllowSelection="true" Striped="true" SelectionChanged="OnSelectionChanged"
           PageSize="5">
     <MatTableHeader>
@@ -60,21 +62,23 @@
 
     protected override void OnInitialized()
     {
-        var propertyChangeSubscription = propertyChangeService.PropertyChangeNotification
-            .Do(_ => StateHasChanged())
-            .Subscribe();
+        jsonStore.StateChanged += StateChangedEventHandler;
         
         var jsonContentChangeSubscription = jsonContentChangeService.JsonContentChangeNotification
             .Do(_ => StateHasChanged())
             .Subscribe();
         
-        disposable.Add(propertyChangeSubscription);
         disposable.Add(jsonContentChangeSubscription);
+    }
+
+    private void StateChangedEventHandler(object? sender, JsonState state)
+    {
+        StateHasChanged();
     }
 
     public void Dispose()
     {
-        disposable.Dispose();
+        jsonStore.StateChanged -= StateChangedEventHandler;
     }
 
     private void OnSelectionChanged(object row)

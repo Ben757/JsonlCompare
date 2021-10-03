@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using Fluxor;
 using JsonlCompare.Client.Interfaces;
 using JsonlCompare.Client.Models;
+using JsonlCompare.Client.Store.Json;
 using Newtonsoft.Json.Linq;
 
 namespace JsonlCompare.Client.Services
@@ -12,7 +14,7 @@ namespace JsonlCompare.Client.Services
     {
         private readonly IJsonContainer jsonContainer;
         private readonly IJsonContentChangeService jsonContentChangeService;
-        
+
         private Lazy<IReadOnlyList<JsonPropertyInfo>> propertyInfos;
         private readonly IDisposable subscription;
 
