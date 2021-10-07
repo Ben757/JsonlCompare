@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using JsonlCompare.Client.Models;
+﻿using JsonlCompare.Client.Models;
 
-namespace JsonlCompare.Client.Actions.JsonPropertyActions
+namespace JsonlCompare.Client.Actions.JsonProperty
 {
     public class JsonPropertyUpdateShowAction
     {

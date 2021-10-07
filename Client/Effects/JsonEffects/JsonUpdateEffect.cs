@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Fluxor;
-using JsonlCompare.Client.Actions.JsonActions;
-using JsonlCompare.Client.Actions.JsonPropertyActions;
+using JsonlCompare.Client.Actions.Json;
+using JsonlCompare.Client.Actions.JsonProperty;
 
 namespace JsonlCompare.Client.Effects.JsonEffects
 {

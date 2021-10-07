@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Fluxor;
-using JsonlCompare.Client.Actions.JsonActions;
+using JsonlCompare.Client.Actions.Json;
 using Newtonsoft.Json.Linq;
 
 namespace JsonlCompare.Client.Store.Json

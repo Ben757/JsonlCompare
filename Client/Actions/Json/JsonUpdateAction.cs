@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace JsonlCompare.Client.Actions.JsonActions
+namespace JsonlCompare.Client.Actions.Json
 {
     public class JsonUpdateAction
     {

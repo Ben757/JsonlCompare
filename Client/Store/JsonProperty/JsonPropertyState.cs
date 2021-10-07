@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Fluxor;
-using JsonlCompare.Client.Actions.JsonPropertyActions;
+using JsonlCompare.Client.Actions.JsonProperty;
 using JsonlCompare.Client.Extensions;
 using JsonlCompare.Client.Models;
 using JsonlCompare.Client.Services;
