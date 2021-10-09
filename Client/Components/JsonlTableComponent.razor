@@ -17,7 +17,7 @@
 
 <MatTable Items="@jsonState.Value.Jsons" class="mat-elevation-z5" ShowPaging="true" 
           AllowSelection="true" Striped="true" SelectionChanged="OnSelectionChanged"
-          PageSize="5">
+          PageSize="25">
     <MatTableHeader>
         @foreach (var property in PropertyInfos())
         {
