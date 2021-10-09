@@ -8,13 +8,13 @@
 
 .dropzone:hover {
     padding: calc(1rem - 3px);
-    border: 3px dashed steelblue;
+    border: 3px dashed lightgray;
 }
 
 .dropzone-drag{
     background-color: #f3f3f3;
     padding: calc(1rem - 3px);
-    border: 3px dashed steelblue;    
+    border: 3px dashed lightgray;    
 }
 
 td {
