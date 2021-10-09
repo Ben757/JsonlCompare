@@ -1,8 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using JsonlCompare.Client.Interfaces;
-using JsonlCompare.Client.Services;
+using Fluxor;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,15 +15,11 @@ namespace JsonlCompare.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+            builder.Services.AddFluxor(o => o.ScanAssemblies(typeof(Program).Assembly));
+
             builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddMatBlazor();
-
-            builder.Services.AddSingleton<IPropertyInfoService, PropertyInfoService>();
-            builder.Services.AddSingleton<IPropertyChangeService, PropertyChangeService>();
-            builder.Services.AddSingleton<IJsonContentChangeService, JsonContentChangeService>();
-            builder.Services.AddSingleton<IJsonContainer, JsonContainer>();
-            builder.Services.AddSingleton<IJsonSelector, JsonSelector>();
-
+            
             await builder.Build().RunAsync();
         }
     }

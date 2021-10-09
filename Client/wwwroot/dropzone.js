@@ -21,7 +21,6 @@
     }
 
     function SendFileContentToBlazor(files) {
-        component.invokeMethodAsync('ClearContainer');
      
         Promise.all(Array.from(files).map(function (file) {
             let reader = new FileReader();

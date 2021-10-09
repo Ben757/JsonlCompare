@@ -1,38 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
-using JsonlCompare.Client.Interfaces;
 using JsonlCompare.Client.Models;
 using Newtonsoft.Json.Linq;
 
 namespace JsonlCompare.Client.Services
 {
-    public class PropertyInfoService : IPropertyInfoService, IDisposable
+    public class PropertyInfoService 
     {
-        private readonly IJsonContainer jsonContainer;
-        private readonly IJsonContentChangeService jsonContentChangeService;
-        
-        private Lazy<IReadOnlyList<JsonPropertyInfo>> propertyInfos;
-        private readonly IDisposable subscription;
-
-        public PropertyInfoService(IJsonContainer jsonContainer, IJsonContentChangeService jsonContentChangeService)
+        public static IReadOnlyList<JsonPropertyInfo> PropertyInfos(IReadOnlyList<JObject> jsons)
         {
-            this.jsonContainer = jsonContainer;
-            this.jsonContentChangeService = jsonContentChangeService;
-            propertyInfos = new Lazy<IReadOnlyList<JsonPropertyInfo>>(() => GetPropertyContainer().ToList());
-
-            subscription = jsonContentChangeService.JsonContentChangeNotification
-                .Do(_ => propertyInfos = new Lazy<IReadOnlyList<JsonPropertyInfo>>(() => GetPropertyContainer().ToList()))
-                .Subscribe();
+            return GetPropertyContainer(jsons).ToList();
         }
 
-        public IReadOnlyList<JsonPropertyInfo> PropertyInfos => propertyInfos.Value;
-
-        private IEnumerable<JsonPropertyInfo> GetPropertyContainer()
+        private static IEnumerable<JsonPropertyInfo> GetPropertyContainer(IReadOnlyList<JObject> jsons)
         {
-            var jsons = jsonContainer.Jsons;
-
             if (!jsons.Any())
                 return Enumerable.Empty<JsonPropertyInfo>();
 
@@ -41,7 +23,7 @@ namespace JsonlCompare.Client.Services
             return HandleJObject(maxJson);
         }
 
-        private JObject CombineJsons(IReadOnlyList<JObject> jsons)
+        private static JObject CombineJsons(IReadOnlyList<JObject> jsons)
         {
             var maxJson = jsons.First();
 
@@ -56,14 +38,14 @@ namespace JsonlCompare.Client.Services
             return maxJson;
         }
 
-        private IReadOnlyList<JsonPropertyInfo> HandleJObject(JObject json)
+        private static IReadOnlyList<JsonPropertyInfo> HandleJObject(JObject json)
         {
             return json.Children()
                 .Select(HandleJToken)
                 .ToList();
         }
 
-        private JsonPropertyInfo HandleJToken(JToken jToken)
+        private static JsonPropertyInfo HandleJToken(JToken jToken)
         {
             var jsonProperty = new JsonPropertyInfo();
 
@@ -93,7 +75,7 @@ namespace JsonlCompare.Client.Services
             jsonProperty.Path = jToken.Path;
         }
 
-        private List<JsonPropertyInfo> HandleJArray(JArray jArray)
+        private static List<JsonPropertyInfo> HandleJArray(JArray jArray)
         {
             var childrenList = new List<JsonPropertyInfo>();
             var index = 0;
@@ -123,11 +105,6 @@ namespace JsonlCompare.Client.Services
             }
 
             return childrenList;
-        }
-
-        public void Dispose()
-        {
-            subscription.Dispose();
         }
     }
 }

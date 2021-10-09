@@ -1,40 +1,32 @@
-﻿@using JsonlCompare.Client.Interfaces
-@using System.Reactive.Linq
-@using System.Reactive.Disposables
+﻿@using System.Reactive.Disposables
 @using JsonlCompare.Client.Extensions
+@using JsonlCompare.Client.Selectors
+@using JsonlCompare.Client.Store.SelectedJson
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
 
 @implements IDisposable
 
-@inject IJsonSelector jsonSelector
-@inject IJsonContentChangeService jsonContentChangeService
+@inject IState<SelectedJsonState> selectedJsonState
 
 <MatPaper Elevation="5" Rounded="true" Class="json-view">
-    @JsonViewContent
+    @jsonMarkupSelector.Select(selectedJsonState)
 </MatPaper>
 
 @code {
-
-    private readonly CompositeDisposable disposables = new();
-    private MarkupString JsonViewContent { get; set; } = (MarkupString) string.Empty;
+    private readonly Selector<SelectedJsonState, MarkupString> jsonMarkupSelector = SelectorFactory
+        .CreateSelector<SelectedJsonState, MarkupString>("jsonMarkup",
+            (state) => JsonToString(state.SelectedJson));
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        selectedJsonState.StateChanged += StateHasChangedEventHandler;
+    }
 
-        var jsonSelectionSubscription = jsonSelector.JsonObservable
-            .Select(JsonToString)
-            .Do(json => JsonViewContent = json)
-            .Do(_ => StateHasChanged())
-            .Subscribe();
-
-        var jsonContentSubscription = jsonContentChangeService.JsonContentChangeNotification
-            .Do(_ => StateHasChanged())
-            .Subscribe();
-        
-        disposables.Add(jsonSelectionSubscription);
-        disposables.Add(jsonContentSubscription);
+    private void StateHasChangedEventHandler(object? sender, SelectedJsonState e)
+    {
+        StateHasChanged();
     }
 
     private static MarkupString JsonToString(JObject? json)
@@ -44,7 +36,7 @@
 
     public void Dispose()
     {
-        disposables.Dispose();
+        selectedJsonState.StateChanged -= StateHasChangedEventHandler;
     }
 
 }

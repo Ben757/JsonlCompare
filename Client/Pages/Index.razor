@@ -1,15 +1,15 @@
 ﻿@using JsonlCompare.Client.Components
-@using JsonlCompare.Client.Interfaces
 @using Microsoft.Extensions.Logging
 @using Newtonsoft.Json.Linq
+@using JsonlCompare.Client.Actions.Json
 
-@inject IJsonContainer jsonContainer
-@inject IJsonContentChangeService jsonContentChangeService
 @inject IJSRuntime runtime
 
 @inject IMatDialogService matDialogService
 
 @inject ILogger<Index> logger
+
+@inject IDispatcher dispatcher
 
 @page "/"
 
@@ -50,20 +50,16 @@
     }
 
     [JSInvokable]
-    public void ClearContainer()
-    {
-        jsonContainer.Clear();
-    }
-
-    [JSInvokable]
     public async Task AddFile(string content)
     {
         var errorCount = 0;
+        var newJsons = new List<JObject>(); 
+        
         foreach (var json in content.Split("\n"))
         {
             try
             {
-                jsonContainer.Add(JObject.Parse(json));
+                newJsons.Add(JObject.Parse(json));
             }
             catch (Exception e)
             {
@@ -75,6 +71,6 @@
         if(errorCount > 0)
             await matDialogService.AlertAsync($"Could not parse {errorCount} jsons from the given file");
         
-        jsonContentChangeService.SignalChange();
+        dispatcher.Dispatch(new JsonUpdateAction(newJsons));
     }
 }
