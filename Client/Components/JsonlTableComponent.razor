@@ -15,33 +15,37 @@
 
 @inject IDispatcher dispatcher
 
-<MudTable Items="@jsonState.Value.Jsons" FixedHeader="true" class="mat-elevation-z5"
-          Striped="true" Hover="true" OnRowClick="OnSelectionChanged" T="JObject">
-    <HeaderContent>
-        @foreach (var property in PropertyInfos())
-        {
-            if (property.Show && !property.HasChildren)
+@if (jsonState.Value.Jsons.Any())
+{
+    <MudTable Items="@jsonState.Value.Jsons" FixedHeader="true"
+              Striped="true" Hover="true" OnRowClick="OnSelectionChanged" T="JObject">
+        <HeaderContent>
+            @foreach (var property in PropertyInfos())
             {
-                <MudTh>@property.Path</MudTh>
+                if (property.Show && !property.HasChildren)
+                {
+                    <MudTh>@property.Path</MudTh>
+                }
             }
-        }
-    </HeaderContent>
-    <RowTemplate>
-        @foreach (var property in PropertyInfos())
-        {
-            if (property.Show && !property.HasChildren)
+        </HeaderContent>
+        <RowTemplate>
+            @foreach (var property in PropertyInfos())
             {
-                <MudTd>@context.SelectToken(property.Path)?.ToString()</MudTd>
+                if (property.Show && !property.HasChildren)
+                {
+                    <MudTd>@context.SelectToken(property.Path)?.ToString()</MudTd>
+                }
             }
-        }
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager HorizontalAlignment="HorizontalAlignment.End"></MudTablePager>
-    </PagerContent>
-</MudTable>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager HorizontalAlignment="HorizontalAlignment.End"></MudTablePager>
+        </PagerContent>
+    </MudTable>
+}
 
 @code
 {
+    private bool HidePager => !jsonState.Value.Jsons.Any();
 
     private IEnumerable<JsonPropertyInfo> PropertyInfos()
     {
@@ -75,4 +79,5 @@
     {
         dispatcher.Dispatch(new SelectedJsonSetAction(tableRowClickEventArgs.Item));
     }
+
 }

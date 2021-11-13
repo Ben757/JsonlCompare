@@ -9,7 +9,11 @@ body{
 }
 
 .property-table{
-    width: calc(100% - 415px);
+    width: calc(100% - 435px);
+}
+
+.margin-top-10px{
+    margin-top: 10px;
 }
 
 .stick-to-right{
@@ -36,7 +40,7 @@ body{
         width: 300px;
     }
     .property-table{
-        width: calc(100% - 315px);
+        width: calc(100% - 335px);
     }
     .info-container{
         width: calc(100% - 335px);
@@ -48,7 +52,7 @@ body{
         width: 200px;
     }
     .property-table{
-        width: calc(100% - 215px);
+        width: calc(100% - 235px);
     }
     .info-container{
         width: calc(100% - 235px);
@@ -60,7 +64,7 @@ body{
        display: none;
     }
     .property-table{
-        width: calc(100% - 15px);
+        width: calc(100% - 35px);
     }
     .info-container{
         width: calc(100% - 35px);
