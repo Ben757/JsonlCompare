@@ -15,28 +15,30 @@
 
 @inject IDispatcher dispatcher
 
-<MatTable Items="@jsonState.Value.Jsons" class="mat-elevation-z5" ShowPaging="true" 
-          AllowSelection="true" Striped="true" SelectionChanged="OnSelectionChanged"
-          PageSize="25">
-    <MatTableHeader>
+<MudTable Items="@jsonState.Value.Jsons" FixedHeader="true" class="mat-elevation-z5"
+          Striped="true" Hover="true" OnRowClick="OnSelectionChanged" T="JObject">
+    <HeaderContent>
         @foreach (var property in PropertyInfos())
         {
             if (property.Show && !property.HasChildren)
             {
-                <th>@property.Path</th>
+                <MudTh>@property.Path</MudTh>
             }
         }
-    </MatTableHeader>
-    <MatTableRow>
+    </HeaderContent>
+    <RowTemplate>
         @foreach (var property in PropertyInfos())
         {
             if (property.Show && !property.HasChildren)
             {
-                <td>@context.SelectToken(property.Path)?.ToString()</td>
+                <MudTd>@context.SelectToken(property.Path)?.ToString()</MudTd>
             }
         }
-    </MatTableRow>
-</MatTable>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager HorizontalAlignment="HorizontalAlignment.End"></MudTablePager>
+    </PagerContent>
+</MudTable>
 
 @code
 {
@@ -69,8 +71,8 @@
         jsonPropertyState.StateChanged -= PropertyStateChangedEventHandler;
     }
 
-    private void OnSelectionChanged(object row)
+    private void OnSelectionChanged(TableRowClickEventArgs<JObject> tableRowClickEventArgs)
     {
-        dispatcher.Dispatch(new SelectedJsonSetAction((JObject)row));
+        dispatcher.Dispatch(new SelectedJsonSetAction(tableRowClickEventArgs.Item));
     }
 }

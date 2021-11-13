@@ -1,25 +1,27 @@
 ﻿<Fluxor.Blazor.Web.StoreInitializer />
-<MatPortalHost></MatPortalHost>
-<MatThemeProvider Theme="@theme">
-    <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
-        <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        </Found>
-        <NotFound>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p>Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-</MatThemeProvider>
+<MudThemeProvider Theme="theme"/>
+<MudDialogProvider/>
+
+<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
 
 @code
 {
-    MatTheme theme = new()
+    MudTheme theme = new()
     {
-        Primary = "#009688",
-        Secondary = "#00c0c5",
-        OnPrimary = "black",
-        OnSecondary = "black"
+        Palette = new Palette(){
+            Primary = "#009688",
+            Secondary = "#00c0c5",
+            Tertiary = "#FFFFFF",
+            AppbarBackground = "#009688",
+        }
     };
 }

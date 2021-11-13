@@ -1,38 +1,25 @@
 @using JsonlCompare.Client.Components
 @inherits LayoutComponentBase
 
-<MatAppBarContainer>
-    <MatAppBar Fixed="true" Style="z-index: 100;">
-        <MatAppBarRow>
-            <MatAppBarSection>
-                <MatIconButton Icon="menu" OnClick="@ToggleDrawer"></MatIconButton>
-                <MatAppBarTitle>JsonlCompare - Compare json lines format (.jsonl)</MatAppBarTitle>
-            </MatAppBarSection>
-            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                <MatIconButton Link="https://github.com/Ben757/JsonlCompare" >
-                    <img src="assets/GitHub-Mark-Light-120px-plus.png" aria-hidden="true" alt="GitHub"/>
-                </MatIconButton>
-            </MatAppBarSection>
-        </MatAppBarRow>
-    </MatAppBar>
-    
-    <MatAppBarContent>
-        <MatDrawerContainer Style="width: 100%; height: 91vh;">
-            <MatDrawer @bind-Opened="@Opened">
-                <div class="drawer">
-                    <MatNavMenu Multi="true">
-                        <PropertySelectionSidebarComponent></PropertySelectionSidebarComponent>
-                    </MatNavMenu>
-                </div>
-            </MatDrawer>
-            <MatDrawerContent>
-                <div class="content">
-                    @Body
-                </div>
-            </MatDrawerContent>
-        </MatDrawerContainer>
-    </MatAppBarContent>
-</MatAppBarContainer>
+<MudLayout>
+    <MudAppBar Fixed="true" Style="z-index: 100;">
+        <MudIconButton Icon="@Icons.Filled.Menu" Color="Color.Tertiary" OnClick="@ToggleDrawer" Edge="Edge.Start"></MudIconButton>
+        <h1>JsonlCompare - Compare json lines format (.jsonl)</h1>
+        <MudSpacer></MudSpacer>
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Tertiary" Link="https://github.com/Ben757/JsonlCompare" Edge="Edge.End"></MudIconButton>
+    </MudAppBar>
+    <MudDrawer @bind-Open="Opened" Variant="@DrawerVariant.Persistent">
+        <MudDrawerHeader></MudDrawerHeader>
+        <div class="drawer">
+            <PropertySelectionSidebarComponent></PropertySelectionSidebarComponent>
+        </div>
+    </MudDrawer>
+    <MudMainContent>
+        <div class="content">
+            @Body
+        </div>
+    </MudMainContent>
+</MudLayout>
 
 
 @code {

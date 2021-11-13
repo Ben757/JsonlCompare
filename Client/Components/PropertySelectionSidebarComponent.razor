@@ -1,31 +1,33 @@
-﻿@using System.Reactive.Disposables
-@using System.Reflection
+﻿@using JsonlCompare.Client.Extensions
 @using JsonlCompare.Client.Models
-@using JsonlCompare.Client.Selectors
-@using JsonlCompare.Client.Services
-@using JsonlCompare.Client.Store.Json
 @using JsonlCompare.Client.Store.JsonProperty
-
+@using JsonlCompare.Client.Actions.JsonProperty
 @implements IDisposable
 
 @inject IState<JsonPropertyState> jsonPropertyState
+@inject IDispatcher dispatcher
 
-@foreach (var property in jsonPropertyState.Value.PropertyInfos)
-{
-    <PropertySelectionComponent JsonProperty="@property"></PropertySelectionComponent>
-}
+<MudTreeView T="JsonPropertyInfo" MultiSelection="true" Items="@jsonPropertyState.Value.PropertyInfos"
+             SelectedValuesChanged="SelectedValuesChanged">
+    <ItemTemplate>
+        <MudTreeViewItem Items="@context.Children" Value="@context" Text="@context.Name" @bind-Selected="@context.Show"/>
+    </ItemTemplate>
+</MudTreeView>
 
 @code {
 
+    private HashSet<JsonPropertyInfo> selectedValues = new();
+
     private void StateChangedEventHandler(object? sender, JsonPropertyState state)
     {
+        selectedValues = jsonPropertyState.Value.PropertyInfos.Flatten(x => x.Children).ToHashSet();
         StateHasChanged();
     }
-    
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        
+        selectedValues = jsonPropertyState.Value.PropertyInfos;
         jsonPropertyState.StateChanged += StateChangedEventHandler;
     }
 
@@ -33,4 +35,20 @@
     {
         jsonPropertyState.StateChanged -= StateChangedEventHandler;
     }
+
+    private void SelectedValuesChanged(HashSet<JsonPropertyInfo> newSelectedValues)
+    {
+        var hideProperties = selectedValues
+            .Where(x => !newSelectedValues.Contains(x));
+
+        var showProperties = newSelectedValues
+            .Where(x => !selectedValues.Contains(x));
+
+        var changedProperties = showProperties.Concat(hideProperties).ToList();
+
+        changedProperties.ForEach(x => dispatcher.Dispatch(new JsonPropertyUpdateShowAction(x)));
+
+        selectedValues = newSelectedValues;
+    }
+
 }

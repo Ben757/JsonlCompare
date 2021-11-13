@@ -10,7 +10,7 @@ namespace JsonlCompare.Client.Store.JsonProperty
 {
     public record JsonPropertyState
     {
-        public IReadOnlyList<JsonPropertyInfo> PropertyInfos { get; init; } = new List<JsonPropertyInfo>();
+        public HashSet<JsonPropertyInfo> PropertyInfos { get; init; } = new HashSet<JsonPropertyInfo>();
     }
     
     public class JsonPropertyFeature : Feature<JsonPropertyState>
@@ -21,7 +21,7 @@ namespace JsonlCompare.Client.Store.JsonProperty
         {
             return new JsonPropertyState()
             {
-                PropertyInfos = new List<JsonPropertyInfo>()
+                PropertyInfos = new HashSet<JsonPropertyInfo>()
             };
         }
     }
