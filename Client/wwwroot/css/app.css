@@ -8,6 +8,11 @@ body{
     align-items: center;
 }
 
+.drawer-header {
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
 .property-table{
     width: calc(100% - 435px);
 }

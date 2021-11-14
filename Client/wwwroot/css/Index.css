@@ -20,3 +20,8 @@
 td {
     white-space: nowrap;
 }
+
+.drawer-logo{
+    margin-top: 16px;
+    height: 64px;
+}
