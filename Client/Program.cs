@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Fluxor;
-using MatBlazor;
+using MudBlazor.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +18,7 @@ namespace JsonlCompare.Client
             builder.Services.AddFluxor(o => o.ScanAssemblies(typeof(Program).Assembly));
 
             builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddMatBlazor();
+            builder.Services.AddMudServices();
             
             await builder.Build().RunAsync();
         }

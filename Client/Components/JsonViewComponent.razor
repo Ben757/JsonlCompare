@@ -9,14 +9,14 @@
 
 @inject IState<SelectedJsonState> selectedJsonState
 
-<MatPaper Elevation="5" Rounded="true" Class="json-view">
+<MudPaper Elevation="5" Class="json-view">
     @jsonMarkupSelector.Select(selectedJsonState)
-</MatPaper>
+</MudPaper>
 
 @code {
     private readonly Selector<SelectedJsonState, MarkupString> jsonMarkupSelector = SelectorFactory
         .CreateSelector<SelectedJsonState, MarkupString>("jsonMarkup",
-            (state) => JsonToString(state.SelectedJson));
+            state => JsonToString(state.SelectedJson));
 
     protected override void OnInitialized()
     {

@@ -23,10 +23,10 @@ namespace JsonlCompare.Client.Tests
                 JObject.Parse(
                     "{\"PseudoOrderNumber\":\"d895e88000f04bc1a96130b9e8a08ec6\",\"DateOfOrder\":\"2021-05-27T22:00:00Z\",\"IsInternal\":true,\"ToDo\":\"Some very fine task\",\"MailAddress\":\"someone@mail.com\",\"Operator\":\"operator\",\"Machine\":{\"SerialNumber\":\"0066P00163\",\"OperatingHours\":120,\"Location\":\"Somewhere\",\"Customer\":{\"Name\":\"Someone\",\"CustomerId\":\"304960\"}}}\n")
             };
-
+        
             // Act
             var result = PropertyInfoService.PropertyInfos(jsons);
-
+        
             //Assert
             var template = new[]
             {
@@ -64,14 +64,14 @@ namespace JsonlCompare.Client.Tests
                 {
                     Name = "Customer",
                     Path = "Customer",
-                    Children = new[]
+                    Children = new HashSet<JsonPropertyInfo>()
                     {
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "Name",
                             Path = "Customer.Name"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "CustomerId",
                             Path = "Customer.CustomerId"
@@ -82,35 +82,35 @@ namespace JsonlCompare.Client.Tests
                 {
                     Name = "Machine",
                     Path = "Machine",
-                    Children = new[]
+                    Children = new HashSet<JsonPropertyInfo>()
                     {
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "SerialNumber",
                             Path = "Machine.SerialNumber"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "OperatingHours",
                             Path = "Machine.OperatingHours"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "Location",
                             Path = "Machine.Location"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "Customer",
                             Path = "Machine.Customer",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "Name",
                                     Path = "Machine.Customer.Name"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "CustomerId",
                                     Path = "Machine.Customer.CustomerId"
@@ -120,10 +120,10 @@ namespace JsonlCompare.Client.Tests
                     }
                 }
             };
-
+        
             result.ShouldDeepEqual(template);
         }
-
+        
         [Test]
         public void GetPropertyContainer_ArraysWithObjects_MergeAndReturnContainer()
         {
@@ -137,10 +137,10 @@ namespace JsonlCompare.Client.Tests
                 JObject.Parse(
                     "{\n    \"PseudoOrderNumber\": \"d895e88000f04bc1a96130b9e8a08ec6\",\n    \"Customers\": [\n\t    {\n\t        \"Name\": \"Someone\",\n\t        \"CustomerId\": \"304960\"\n\t    },\n\t    {\n\t        \"Name\": \"Someone\",\n\t        \"CustomerId\": null\n\t    },\n\t    {\n\t        \"Name\": \"Someone\",\n\t        \"CustomerId\": \"304960\",\n\t        \"MoreProperties\": true\n\t    },\n\t    {\n\t        \"Name\": \"Someone\",\n\t        \"CustomerId\": \"304960\",\n\t        \"MoreProperties\": true,\n\t        \"AnotherProperty\": \"TestProperty\"\n\t    }\n\t]\n}")
             };
-
+        
             // Act
             var result = PropertyInfoService.PropertyInfos(jsons);
-
+        
             //Assert
             var template = new[]
             {
@@ -153,89 +153,89 @@ namespace JsonlCompare.Client.Tests
                 {
                     Name = "Customers",
                     Path = "Customers",
-                    Children = new[]
+                    Children = new HashSet<JsonPropertyInfo>()
                     {
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "0",
                             Path = "Customers[0]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "Name",
                                     Path = "Customers[0].Name"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "CustomerId",
                                     Path = "Customers[0].CustomerId"
                                 }
                             }
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "1",
                             Path = "Customers[1]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "Name",
                                     Path = "Customers[1].Name"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "CustomerId",
                                     Path = "Customers[1].CustomerId"
                                 }
                             }
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "2",
                             Path = "Customers[2]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "Name",
                                     Path = "Customers[2].Name"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "CustomerId",
                                     Path = "Customers[2].CustomerId"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "MoreProperties",
                                     Path = "Customers[2].MoreProperties"
                                 }
                             }
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "3",
                             Path = "Customers[3]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "Name",
                                     Path = "Customers[3].Name"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "CustomerId",
                                     Path = "Customers[3].CustomerId"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "MoreProperties",
                                     Path = "Customers[3].MoreProperties"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "AnotherProperty",
                                     Path = "Customers[3].AnotherProperty"
@@ -245,10 +245,10 @@ namespace JsonlCompare.Client.Tests
                     }
                 }
             };
-
+        
             result.ShouldDeepEqual(template);
         }
-
+        
         [Test]
         public void GetPropertyContainer_ArraysWithPrimitives_MergeAndReturnContainer()
         {
@@ -262,10 +262,10 @@ namespace JsonlCompare.Client.Tests
                 JObject.Parse(
                     "{\n    \"PseudoOrderNumber\": \"d895e88000f04bc1a96130b9e8a08ec6\",\n    \"CustomerIds\": [\n\t    4,\n\t    7,\n\t    15,\n\t    48,\n\t    53,\n\t    1,\n\t    234,\n\t    35,\n\t    74\n\t],\n\t\"CustomerNames\": [\n\t\t\"First\",\n\t\t\"Important\",\n\t\t\"Valuable\",\n\t\t\"Others\",\n\t\t\"More\"\n\t]\n}")
             };
-
+        
             // Act
             var result = PropertyInfoService.PropertyInfos(jsons);
-
+        
             //Assert
             var template = new[]
             {
@@ -278,49 +278,49 @@ namespace JsonlCompare.Client.Tests
                 {
                     Name = "CustomerIds",
                     Path = "CustomerIds",
-                    Children = new[]
+                    Children = new HashSet<JsonPropertyInfo>()
                     {
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "0",
                             Path = "CustomerIds[0]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "1",
                             Path = "CustomerIds[1]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "2",
                             Path = "CustomerIds[2]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "3",
                             Path = "CustomerIds[3]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "4",
                             Path = "CustomerIds[4]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "5",
                             Path = "CustomerIds[5]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "6",
                             Path = "CustomerIds[6]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "7",
                             Path = "CustomerIds[7]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "8",
                             Path = "CustomerIds[8]"
@@ -331,29 +331,29 @@ namespace JsonlCompare.Client.Tests
                 {
                     Name = "CustomerNames",
                     Path = "CustomerNames",
-                    Children = new[]
+                    Children = new HashSet<JsonPropertyInfo>()
                     {
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "0",
                             Path = "CustomerNames[0]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "1",
                             Path = "CustomerNames[1]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "2",
                             Path = "CustomerNames[2]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "3",
                             Path = "CustomerNames[3]"
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "4",
                             Path = "CustomerNames[4]"
@@ -361,10 +361,10 @@ namespace JsonlCompare.Client.Tests
                     }
                 }
             };
-
+        
             result.ShouldDeepEqual(template);
         }
-
+        
         [Test]
         public void GetPropertyContainer_ArraysWithArraysOfPrimitives_MergeAndReturnContainer()
         {
@@ -378,10 +378,10 @@ namespace JsonlCompare.Client.Tests
                 JObject.Parse(
                     "{\n    \"PseudoOrderNumber\": \"d895e88000f04bc1a96130b9e8a08ec6\",\n    \"CustomerArrays\": [\n    \t[\"First\", \"Second\", \"Third\", \"Ten\", \"Eleven\"]\n    ]\n}")
             };
-
+        
             // Act
             var result = PropertyInfoService.PropertyInfos(jsons);
-
+        
             //Assert
             var template = new[]
             {
@@ -394,81 +394,81 @@ namespace JsonlCompare.Client.Tests
                 {
                     Name = "CustomerArrays",
                     Path = "CustomerArrays",
-                    Children = new[]
+                    Children = new HashSet<JsonPropertyInfo>()
                     {
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "0",
                             Path = "CustomerArrays[0]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "0",
                                     Path = "CustomerArrays[0][0]"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "1",
                                     Path = "CustomerArrays[0][1]"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "2",
                                     Path = "CustomerArrays[0][2]"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "3",
                                     Path = "CustomerArrays[0][3]"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "4",
                                     Path = "CustomerArrays[0][4]"
                                 }
                             }
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "1",
                             Path = "CustomerArrays[1]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "0",
                                     Path = "CustomerArrays[1][0]"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "1",
                                     Path = "CustomerArrays[1][1]"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "2",
                                     Path = "CustomerArrays[1][2]"
                                 }
                             }
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "2",
                             Path = "CustomerArrays[2]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "0",
                                     Path = "CustomerArrays[2][0]"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "1",
                                     Path = "CustomerArrays[2][1]"
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "2",
                                     Path = "CustomerArrays[2][2]"
@@ -478,10 +478,10 @@ namespace JsonlCompare.Client.Tests
                     }
                 }
             };
-
+        
             result.ShouldDeepEqual(template);
         }
-
+        
         [Test]
         public void GetPropertyContainer_ArraysWithArraysOfObjects_MergeAndReturnContainer()
         {
@@ -495,10 +495,10 @@ namespace JsonlCompare.Client.Tests
                 JObject.Parse(
                     "{\n    \"PseudoOrderNumber\": \"d895e88000f04bc1a96130b9e8a08ec6\",\n    \"CustomerArrays\": [\n    \t[{\"Name\" : \"First\", \"Id\": 12}, {\"Name\" : \"Second\", \"Id\": 13}, {\"Name\": \"Tenth\", \"Id\": 23}]\n    ]\n}")
             };
-
+        
             // Act
             var result = PropertyInfoService.PropertyInfos(jsons);
-
+        
             //Assert
             var template = new[]
             {
@@ -511,62 +511,62 @@ namespace JsonlCompare.Client.Tests
                 {
                     Name = "CustomerArrays",
                     Path = "CustomerArrays",
-                    Children = new[]
+                    Children = new HashSet<JsonPropertyInfo>()
                     {
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "0",
                             Path = "CustomerArrays[0]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "0",
                                     Path = "CustomerArrays[0][0]",
-                                    Children = new[]
+                                    Children = new HashSet<JsonPropertyInfo>()
                                     {
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Name",
                                             Path = "CustomerArrays[0][0].Name"
                                         },
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Id",
                                             Path = "CustomerArrays[0][0].Id"
                                         }
                                     }
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "1",
                                     Path = "CustomerArrays[0][1]",
-                                    Children = new[]
+                                    Children = new HashSet<JsonPropertyInfo>()
                                     {
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Name",
                                             Path = "CustomerArrays[0][1].Name"
                                         },
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Id",
                                             Path = "CustomerArrays[0][1].Id"
                                         }
                                     }
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "2",
                                     Path = "CustomerArrays[0][2]",
-                                    Children = new[]
+                                    Children = new HashSet<JsonPropertyInfo>()
                                     {
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Name",
                                             Path = "CustomerArrays[0][2].Name"
                                         },
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Id",
                                             Path = "CustomerArrays[0][2].Id"
@@ -575,42 +575,42 @@ namespace JsonlCompare.Client.Tests
                                 }
                             }
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "1",
                             Path = "CustomerArrays[1]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "0",
                                     Path = "CustomerArrays[1][0]",
-                                    Children = new[]
+                                    Children = new HashSet<JsonPropertyInfo>()
                                     {
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Name",
                                             Path = "CustomerArrays[1][0].Name"
                                         },
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Id",
                                             Path = "CustomerArrays[1][0].Id"
                                         }
                                     }
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "1",
                                     Path = "CustomerArrays[1][1]",
-                                    Children = new[]
+                                    Children = new HashSet<JsonPropertyInfo>()
                                     {
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Name",
                                             Path = "CustomerArrays[1][1].Name"
                                         },
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Id",
                                             Path = "CustomerArrays[1][1].Id"
@@ -619,42 +619,42 @@ namespace JsonlCompare.Client.Tests
                                 }
                             }
                         },
-                        new JsonPropertyInfo
+                        new()
                         {
                             Name = "2",
                             Path = "CustomerArrays[2]",
-                            Children = new[]
+                            Children = new HashSet<JsonPropertyInfo>()
                             {
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "0",
                                     Path = "CustomerArrays[2][0]",
-                                    Children = new[]
+                                    Children = new HashSet<JsonPropertyInfo>()
                                     {
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Name",
                                             Path = "CustomerArrays[2][0].Name"
                                         },
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Id",
                                             Path = "CustomerArrays[2][0].Id"
                                         }
                                     }
                                 },
-                                new JsonPropertyInfo
+                                new()
                                 {
                                     Name = "1",
                                     Path = "CustomerArrays[2][1]",
-                                    Children = new[]
+                                    Children = new HashSet<JsonPropertyInfo>()
                                     {
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Name",
                                             Path = "CustomerArrays[2][1].Name"
                                         },
-                                        new JsonPropertyInfo
+                                        new()
                                         {
                                             Name = "Id",
                                             Path = "CustomerArrays[2][1].Id"
@@ -666,7 +666,7 @@ namespace JsonlCompare.Client.Tests
                     }
                 }
             };
-
+        
             result.ShouldDeepEqual(template);
         }
     }

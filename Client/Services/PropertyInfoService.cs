@@ -8,9 +8,9 @@ namespace JsonlCompare.Client.Services
 {
     public class PropertyInfoService 
     {
-        public static IReadOnlyList<JsonPropertyInfo> PropertyInfos(IReadOnlyList<JObject> jsons)
+        public static HashSet<JsonPropertyInfo> PropertyInfos(IReadOnlyList<JObject> jsons)
         {
-            return GetPropertyContainer(jsons).ToList();
+            return GetPropertyContainer(jsons).ToHashSet();
         }
 
         private static IEnumerable<JsonPropertyInfo> GetPropertyContainer(IReadOnlyList<JObject> jsons)
@@ -38,11 +38,11 @@ namespace JsonlCompare.Client.Services
             return maxJson;
         }
 
-        private static IReadOnlyList<JsonPropertyInfo> HandleJObject(JObject json)
+        private static HashSet<JsonPropertyInfo> HandleJObject(JObject json)
         {
             return json.Children()
                 .Select(HandleJToken)
-                .ToList();
+                .ToHashSet();
         }
 
         private static JsonPropertyInfo HandleJToken(JToken jToken)
@@ -75,9 +75,9 @@ namespace JsonlCompare.Client.Services
             jsonProperty.Path = jToken.Path;
         }
 
-        private static List<JsonPropertyInfo> HandleJArray(JArray jArray)
+        private static HashSet<JsonPropertyInfo> HandleJArray(JArray jArray)
         {
-            var childrenList = new List<JsonPropertyInfo>();
+            var childrenList = new HashSet<JsonPropertyInfo>();
             var index = 0;
 
             foreach (var token in jArray)

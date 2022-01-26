@@ -15,31 +15,37 @@
 
 @inject IDispatcher dispatcher
 
-<MatTable Items="@jsonState.Value.Jsons" class="mat-elevation-z5" ShowPaging="true" 
-          AllowSelection="true" Striped="true" SelectionChanged="OnSelectionChanged"
-          PageSize="25">
-    <MatTableHeader>
-        @foreach (var property in PropertyInfos())
-        {
-            if (property.Show && !property.HasChildren)
+@if (jsonState.Value.Jsons.Any())
+{
+    <MudTable Items="@jsonState.Value.Jsons" FixedHeader="true"
+              Striped="true" Hover="true" OnRowClick="OnSelectionChanged" T="JObject">
+        <HeaderContent>
+            @foreach (var property in PropertyInfos())
             {
-                <th>@property.Path</th>
+                if (property.Show && !property.HasChildren)
+                {
+                    <MudTh>@property.Path</MudTh>
+                }
             }
-        }
-    </MatTableHeader>
-    <MatTableRow>
-        @foreach (var property in PropertyInfos())
-        {
-            if (property.Show && !property.HasChildren)
+        </HeaderContent>
+        <RowTemplate>
+            @foreach (var property in PropertyInfos())
             {
-                <td>@context.SelectToken(property.Path)?.ToString()</td>
+                if (property.Show && !property.HasChildren)
+                {
+                    <MudTd>@context.SelectToken(property.Path)?.ToString()</MudTd>
+                }
             }
-        }
-    </MatTableRow>
-</MatTable>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager HorizontalAlignment="HorizontalAlignment.End"></MudTablePager>
+        </PagerContent>
+    </MudTable>
+}
 
 @code
 {
+    private bool HidePager => !jsonState.Value.Jsons.Any();
 
     private IEnumerable<JsonPropertyInfo> PropertyInfos()
     {
@@ -69,8 +75,9 @@
         jsonPropertyState.StateChanged -= PropertyStateChangedEventHandler;
     }
 
-    private void OnSelectionChanged(object row)
+    private void OnSelectionChanged(TableRowClickEventArgs<JObject> tableRowClickEventArgs)
     {
-        dispatcher.Dispatch(new SelectedJsonSetAction((JObject)row));
+        dispatcher.Dispatch(new SelectedJsonSetAction(tableRowClickEventArgs.Item));
     }
+
 }

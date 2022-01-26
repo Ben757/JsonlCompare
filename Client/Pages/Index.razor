@@ -5,7 +5,7 @@
 
 @inject IJSRuntime runtime
 
-@inject IMatDialogService matDialogService
+@inject ISnackbar snackbar
 
 @inject ILogger<Index> logger
 
@@ -15,7 +15,7 @@
 
 <link href="css/Index.css" rel="stylesheet">
 <div>
-    <MatPaper Elevation="5" Rounded="true" Class="info-container">
+    <MudPaper Elevation="5" Rounded="true" Class="info-container">
         <div>
             <div class="dropzone" @ref="dropZoneElement">
                 <h1>Jsonl Compare</h1>
@@ -27,9 +27,9 @@
                     If you like the project, feel free to leave a star.</p>
             </div>
         </div>
-    </MatPaper>
+    </MudPaper>
 </div>
-<div class="property-table">
+<div class="property-table margin-top-10px">
     <JsonlTableComponent/>
 </div>
 <div class="stick-to-right">
@@ -69,9 +69,9 @@
                 logger.LogInformation(e, "Could not parse json {Json}", json);
             }
         }
-        
-        if(errorCount > 0)
-            await matDialogService.AlertAsync($"Could not parse {errorCount} jsons from the given file");
+
+        if (errorCount > 0)
+            snackbar.Add($"Error while parsing {errorCount} JSON(s). Those are skipped.", Severity.Error, options => options.ShowTransitionDuration = 500);
         
         dispatcher.Dispatch(new JsonUpdateAction(newJsons));
     }
