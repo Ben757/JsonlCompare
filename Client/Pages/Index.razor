@@ -43,7 +43,7 @@
     {
         if (firstRender)
         {
-            var module = await runtime.InvokeAsync<IJSObjectReference>("import", new[] { "./dropzone.js" });
+            var module = await runtime.InvokeAsync<IJSObjectReference>("import", new object?[] { "./dropzone.js" });
 
             var selfReference = DotNetObjectReference.Create(this);
             
@@ -52,7 +52,7 @@
     }
 
     [JSInvokable]
-    public async Task AddFile(string content)
+    public Task AddFile(string content)
     {
         var errorCount = 0;
         var newJsons = new List<JObject>(); 
@@ -74,5 +74,7 @@
             snackbar.Add($"Error while parsing {errorCount} JSON(s). Those are skipped.", Severity.Error, options => options.ShowTransitionDuration = 500);
         
         dispatcher.Dispatch(new JsonUpdateAction(newJsons));
+        
+        return Task.CompletedTask;
     }
 }
