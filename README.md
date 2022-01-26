@@ -32,9 +32,9 @@ This is a Blazor WebAssembly project. No data is uploaded to the server. Your fi
 
 A version of this software is deployed at [jsonl.rccellerated.tk](https://jsonl.rccellerated.tk). To upload a file, Drag&Drop it to text box in the middle. 
 Your **jsonl** files are parsed and afterward shown in a table below the welcome text.
-![All properties](/assets/AllProps.png | width=400)
+![All properties](/assets/AllProps.png)
 
 Open the hamburger menu to find a nested list of properties. Here you can select which properties shall be shown in the table.
-![Only some properties](/assets/OnlySomeProps.png | width=400)
+![Only some properties](/assets/OnlySomeProps.png)
 
 Click on a row to show a formated version of the underlying JSON in the card to the right.
